@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.10</title>
+<title>MetaChess v2.11</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -293,7 +293,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <main>
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.10</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.11</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bd"></div><div id="capB" class="cap"></div>
 <div id="an"></div>
@@ -2024,6 +2024,7 @@ function updChat(){
  const need=tab==='play'&&(S.ai.chat||NET.peer);
  if(need){if(S.ai.chat||NET.peer){NET.dockOpen=NET.dockOpen||0;try{netEnsureDock()}catch(e){}}}
 }
+const aiIsPlayer=()=>playersList().some(c=>(S.ctl[c]||'')==='a');
 async function sendChat(){
  const inp=$('#chatin')||$('#netchatin');
  const t=(inp&&inp.value||'').trim();
@@ -2031,8 +2032,8 @@ async function sendChat(){
  if(inp)inp.value='';
  /* в сеть */
  if(NET.peer)netChatSend(t);
- /* к нейросети */
- if(S.ai.chat&&S.ai.url){
+ /* к нейросети — только если она выбрана как игрок */
+ if(S.ai.chat&&S.ai.url&&aiIsPlayer()){
   chatAdd('me',t);
   const i=chatAdd('ai','Нейросеть думает…');
   const r=await aiAsk(t,{timeout:60000,temperature:0.85});
@@ -2041,7 +2042,7 @@ async function sendChat(){
   try{netPaintChat(true);chatRender()}catch(e){}
  }else if(!NET.peer){
   chatAdd('me',t);
-  chatAdd('sys','Включи «Чат с нейросетью» в настройках или зайди в комнату.');
+  chatAdd('sys','Нейросеть отвечает только если выбрана как игрок (режим «Нейросеть»).');
  }
 }
 function avatarSettings(){
@@ -2163,8 +2164,8 @@ function netApplySeatsToCtl(){
  pl.forEach(c=>{
   const s=NET.seats[c];
   if(s&&s.peerId===netMyId())S.ctl[c]='h';
-  else if(s)S.ctl[c]='net';
-  else S.ctl[c]='s'; /* свободное место — сильный бот, чтобы партия не зависала */
+  else if(s)S.ctl[c]='net'; /* живой игрок по сети — ждём его ход, бот не ходит */
+  else S.ctl[c]='lock'; /* пустое место — блокировка, не бот */
  });
 }
 function netApply(msg,fromPeerId){
@@ -2362,7 +2363,7 @@ function netChatSend(text){
  if(netIsHost())netBroadcast(msg);
  else if(NET.conns[0]&&NET.conns[0].conn)NET.conns[0].conn.send(msg);
  /* если чат с ИИ включён — дублируем вопрос нейросети */
- if(S.ai.chat&&S.ai.url&&!S.ai.silent){
+ if(S.ai.chat&&S.ai.url&&!S.ai.silent&&typeof aiIsPlayer==='function'&&aiIsPlayer()){
   const i=CHAT.log.length;
   CHAT.log.push({who:'ai',name:'Нейросеть',text:'Нейросеть думает…',ts:Date.now()});
   NET.chat.push({who:'ai',name:'Нейросеть',text:'Нейросеть думает…',ts:Date.now()});
@@ -2463,12 +2464,12 @@ ${NET.room?`<p class="hint"><b>Код:</b> <code style="user-select:all;word-bre
 ${NET.status?`<p class="hint">${esc(NET.status)}</p>`:''}
 ${NET.peer?`<p class="hint">Места (${pl.length} игроков):</p><div class="row" style="flex-wrap:wrap">${seatsHtml}</div>`:''}
 ${netIsHost()&&NET.lobby?`<div class="row"><button data-a="netstart" class="on">Начать игру</button></div><p class="hint">Выбери цвет кнопкой выше, иначе при старте займётся первое свободное место.</p>`:''}
-${NET.peer&&!NET.lobby?`<p class="hint">Партия идёт. Ходишь только за свой цвет. Чат — кнопка 💬 справа внизу.</p>`:''}
+${NET.peer&&!NET.lobby?`<p class="hint">Партия идёт. Ходишь только за свой цвет. Свободные места заблокированы (боты не ходят). Чат — 💬.</p>`:''}
 <p class="hint">Код комнаты живёт, пока хост онлайн. После выхода обоих код можно попробовать открыть снова (если PeerJS ещё держит id) или создать новый. Если PeerJS недоступен — «Получить ссылку».</p>`;
 }
 
 function botMove(){
- if(over||pend||S.paused||S.ctl[turn]=='h')return;
+ if(over||pend||S.paused||S.ctl[turn]=='h'||S.ctl[turn]=='net'||S.ctl[turn]=='lock')return;
  if(duckPend){
   const H=BH(),W=BW(),opts=[];
   for(let i=0;i<H;i++)for(let k=0;k<W;k++)if(!B[i][k]&&!(duck&&duck.r===i&&duck.c===k))opts.push([i,k]);
@@ -2489,8 +2490,9 @@ function botMove(){
  if(pend)pick(bestPromo());
 }
 function botCheck(){if(over||pend||S.paused||bbusy||cur!=REC.length-1||anMode)return;
- if(duckPend){if(S.ctl[turn]=='h')return;bbusy=1;$('#st').textContent='Бот двигает утку…';setTimeout(()=>{bbusy=0;botMove()},350);return}
- if(S.ctl[turn]=='h')return;bbusy=1;
+ if(S.ctl[turn]=='h'||S.ctl[turn]=='net'||S.ctl[turn]=='lock')return;
+ if(duckPend){bbusy=1;$('#st').textContent='Бот двигает утку…';setTimeout(()=>{bbusy=0;botMove()},350);return}
+ bbusy=1;
  if(S.ctl[turn]=='a'){$('#st').textContent='Нейросеть думает…';const thinkI=S.ai.talk?chatAdd('ai','Нейросеть думает…'):-1;setTimeout(async()=>{let moved=false;try{moved=!!(await botAI())}catch(e){chatAdd('ai','Ошибка нейросети: '+(AI_LAST_ERROR||String(e)))}finally{bbusy=0;if(thinkI>=0&&CHAT.log[thinkI]&&CHAT.log[thinkI].text==='Нейросеть думает…'){CHAT.log.splice(thinkI,1);chatRender()}if(moved)botCheck();else $('#st').textContent='Ход ожидает ответа API — фигуры не передвинуты.'}},600);return}
  $('#st').textContent='Бот думает…';setTimeout(()=>{bbusy=0;botMove()},500)}
 
