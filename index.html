@@ -4,16 +4,28 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.7</title>
+<title>MetaChess v2.8</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
-:root{color-scheme:light;--bg:#eaf0f3;--fg:#15232d;--card:#fff;--l:#d9e4e8;--d:#7d9aa8;--sel:#f2a33a;--go:#1f7a5c;--acc:#2f5d8a;--line:#c4d2d9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#10181f;--fg:#e4ecf0;--card:#1a252e;--l:#aebfc7;--d:#55707e;--sel:#f5b54a;--go:#4fd1a3;--acc:#4f86bd;--line:#2c3a45}}
-:root[data-theme=dark]{color-scheme:dark;--bg:#10181f;--fg:#e4ecf0;--card:#1a252e;--l:#aebfc7;--d:#55707e;--sel:#f5b54a;--go:#4fd1a3;--acc:#4f86bd;--line:#2c3a45}
+:root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{color-scheme:light;--bg:#e8eef8;--fg:#0f172a;--card:rgba(255,255,255,.9);--l:#c7d2fe;--d:#64748b;--sel:#0ea5e9;--go:#059669;--acc:#4f46e5;--acc2:#7c3aed;--line:rgba(79,70,229,.2);--glow:rgba(79,70,229,.25)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--fg);font:500 16px/1.45 Manrope,system-ui,sans-serif}
-main{max-width:520px;margin:auto;padding:14px 12px 28px}
-h1{font-size:22px;font-weight:800;margin:4px 0 12px}
+body{margin:0;color:var(--fg);font:500 16px/1.45 Manrope,system-ui,sans-serif;
+ background:
+  radial-gradient(ellipse 120% 80% at 10% -10%, rgba(99,102,241,.35) 0%, transparent 50%),
+  radial-gradient(ellipse 90% 60% at 100% 0%, rgba(167,139,250,.22) 0%, transparent 45%),
+  radial-gradient(ellipse 70% 50% at 50% 100%, rgba(14,165,233,.12) 0%, transparent 40%),
+  radial-gradient(circle at 20% 40%, rgba(255,255,255,.04) 0 1px, transparent 1.5px),
+  radial-gradient(circle at 70% 20%, rgba(255,255,255,.035) 0 1px, transparent 1.5px),
+  radial-gradient(circle at 40% 80%, rgba(255,255,255,.03) 0 1px, transparent 1.5px),
+  radial-gradient(circle at 85% 60%, rgba(255,255,255,.04) 0 1px, transparent 1.5px),
+  var(--bg);
+ background-attachment:fixed;min-height:100dvh}
+main{max-width:520px;margin:auto;padding:14px 12px 28px;position:relative}
+h1{font-size:22px;font-weight:800;margin:4px 0 12px;letter-spacing:.02em;
+ background:linear-gradient(105deg,#e0e7ff 0%,#a5b4fc 40%,#c4b5fd 70%,#7dd3fc 100%);
+ -webkit-background-clip:text;background-clip:text;color:transparent}
+h1 small{background:none;-webkit-background-clip:unset;background-clip:unset;color:var(--fg);opacity:.55}
 [hidden]{display:none!important}
 button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
 .on{background:var(--acc);border-color:var(--acc);color:#fff}
@@ -199,6 +211,22 @@ input[type=password]{font:inherit;padding:8px;border-radius:8px;border:1px solid
 .avatar-pick.on{border-color:var(--acc);outline:2px solid var(--acc)}
 .avatar-pick img{width:100%;height:100%;object-fit:cover}
 
+
+button,.btn{backdrop-filter:blur(8px);transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover,.btn:hover{border-color:rgba(165,180,252,.45)}
+button.on,.on{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;box-shadow:0 0 20px var(--glow)}
+#tabs{background:rgba(12,18,36,.75);backdrop-filter:blur(12px);border-color:var(--line);box-shadow:0 0 0 1px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.25)}
+#tabs button.on{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 16px var(--glow)}
+#bd{box-shadow:0 0 0 1px rgba(148,163,255,.15),0 12px 40px rgba(0,0,0,.4),0 0 60px rgba(99,102,241,.12);border-radius:10px}
+.cap{background:rgba(12,18,36,.7)!important;border-color:rgba(52,211,153,.45)!important;backdrop-filter:blur(8px)}
+#st{text-shadow:0 0 20px rgba(125,211,252,.25)}
+#netdock{background:rgba(12,18,36,.92);border-color:rgba(148,163,255,.3);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 40px rgba(99,102,241,.15);backdrop-filter:blur(16px)}
+#netdock .net-head{background:linear-gradient(135deg,var(--acc),var(--acc2))}
+#netfab{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 6px 24px var(--glow)}
+input[type=text],input[type=password],input[type=url],input[type=number],select,textarea{background:rgba(12,18,36,.6);border-color:var(--line);color:var(--fg)}
+.mode-card,.pack-card,#chatlog,#an .ml{background:rgba(12,18,36,.65);border-color:var(--line);backdrop-filter:blur(8px)}
+.endov{background:rgba(7,11,22,.82);backdrop-filter:blur(6px)}
+
 </style>
 <script>
 /* PeerJS 1.5.4 inlined — works from content:// and file:// */
@@ -216,7 +244,7 @@ input[type=password]{font:inherit;padding:8px;border-radius:8px;border:1px solid
 </head>
 <body>
 <main>
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.7</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.8</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bd"></div><div id="capB" class="cap"></div>
 <div id="an"></div>
@@ -228,7 +256,7 @@ input[type=password]{font:inherit;padding:8px;border-radius:8px;border:1px solid
 const $=s=>document.querySelector(s),gcd=(a,b)=>b?gcd(b,a%b):a,esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),clone=b=>JSON.parse(JSON.stringify(b));
 const O=[[1,0],[-1,0],[0,1],[0,-1]],D=[[1,1],[1,-1],[-1,1],[-1,-1]],ray=(v,n)=>v.map(a=>[...a,n]);
 const PAL=['#101018','#ffffff','#e3dfd3','#aaa597','#7a7a90','#4a4a60','#2c2c3c','#d93b3b','#f0892d','#f2d14b','#5cc25a','#4cc3e8','#3a6fd8','#7a4fd1','#e86fb0','#8a5a35'];
-const BP=[['#d9e4e8','#7d9aa8'],['#f0d9b5','#b58863'],['#eeeed2','#769656'],['#e8dff0','#8e6fb0'],['#f3e3c3','#c47a3b']],BL='.'.repeat(256),E16='.'.repeat(16);
+const BP=[['#93c5fd','#1e3a5f'],['#fdba74','#7c2d12'],['#6ee7b7','#065f46'],['#c4b5fd','#3b0764'],['#fda4af','#881337']],BL='.'.repeat(256),E16='.'.repeat(16);
 const R=a=>['........','........',...a,'........'],mir=r=>r+[...r].reverse().join('');
 const ART={
 k:R(['.......f','.....fff','.....fff','.......f','....ffff','...fffff','...fffff','...fffff','....ffff','..oooooo','...fffff','..ffffff','..ffffff']).map(mir),
@@ -1349,7 +1377,8 @@ const AI_DEF={
  model:AI_PRESETS.zveno.model,
  key:'',
  persona:'Ты дерзкий шахматный соперник. Отвечай по-русски, 1–2 предложения, с характером.',
- chat:1,
+ chat:0,
+ talk:0,
  strict:1,
  timeout:60000,
  preset:'zveno',
@@ -1600,14 +1629,14 @@ async function botAI(){
  let chosen=null,say=null,extra=null,txt,j,k;
  const top=(rk.length?rk:L).slice(0,10);
  const listStr=top.map((x,i)=>(i+1)+') '+x.str).join(', ');
- const sysStrict='Ты играешь в шахматы. Не отдавай фигуры даром. Выбирай ТОЛЬКО ход из списка (лучшая оценка сверху). Ответ строго JSON: {"move":"e2e4","say":"кратко"}.';
- const sysFree='Ты играешь в шахматы. Не отдавай фигуры даром. Назови легальный ход. JSON: {"move":"e2e4","say":"кратко"}.';
+ const sysStrict=S.ai.talk?'Ты играешь в шахматы. Не отдавай фигуры даром. Выбирай ТОЛЬКО ход из списка (лучшая оценка сверху). Ответ строго JSON: {"move":"e2e4","say":"кратко"}.':'Ты играешь в шахматы. Не отдавай фигуры даром. Выбирай ТОЛЬКО ход из списка (лучшая оценка сверху). Ответ строго JSON: {"move":"e2e4"}. Без комментариев.';
+ const sysFree=S.ai.talk?'Ты играешь в шахматы. Не отдавай фигуры даром. Назови легальный ход. JSON: {"move":"e2e4","say":"кратко"}.':'Ты играешь в шахматы. Не отдавай фигуры даром. Назови легальный ход. JSON: {"move":"e2e4"}. Без комментариев.';
  if(S.ai.strict!==0){
   txt=await aiAsk('Сейчас твой ход ('+colGen(turn)+'). Кандидаты (от сильного к слабому по оценке движка): '+listStr+'. Выбери один.',{system:sysStrict,jsonMode:true,temperature:0.15});
   j=parseJ(txt);k=j&&normMove(j.move);say=j&&j.say;
   chosen=(k&&top.find(x=>x.key==k||x.str.startsWith(k)))||(k&&L.find(x=>x.key==k))||null;
-  if(txt==null){chatAdd('ai','API: '+(AI_LAST_ERROR||'нет ответа')+'. Ход не сделан.');return false;}
-  if(!chosen){chosen=best;extra='Ход модели вне списка — беру лучший по оценке движка ('+best.str+').'}
+  if(txt==null){const err='API: '+(AI_LAST_ERROR||'нет ответа')+'. Ход не сделан.';if(S.ai.talk||S.ai.chat)chatAdd('ai',err);else $('#st').textContent=err;return false;}
+  if(!chosen){chosen=best;extra=(S.ai.talk||S.ai.chat)?'Ход модели вне списка — беру лучший по оценке движка ('+best.str+').':null}
   /* hybrid: если модель выбрала ход сильно хуже лучшего — подмена */
   if(S.ai.hybrid&&chosen&&best&&ranked.length>1){
    const idx=rk.indexOf(chosen);
@@ -1617,12 +1646,11 @@ async function botAI(){
   txt=await aiAsk('Сейчас твой ход ('+colGen(turn)+'). Предложи ход.',{system:sysFree,jsonMode:true,temperature:0.3});
   j=parseJ(txt);k=j&&normMove(j.move);say=j&&j.say;
   chosen=k&&L.find(x=>x.key==k);
-  if(txt==null){chatAdd('ai','API: '+(AI_LAST_ERROR||'нет ответа')+'. Ход не сделан.');return false;}
-  if(!chosen){chosen=best;extra='Нелегальный ход модели — '+best.str+' от движка.'}
+  if(txt==null){const err='API: '+(AI_LAST_ERROR||'нет ответа')+'. Ход не сделан.';if(S.ai.talk||S.ai.chat)chatAdd('ai',err);else $('#st').textContent=err;return false;}
+  if(!chosen){chosen=best;extra=(S.ai.talk||S.ai.chat)?'Нелегальный ход модели — '+best.str+' от движка.':null}
  }
  if(!ok())return false;
- if(say){chatAdd('ai',String(say));CHAT.hist.push({role:'assistant',content:String(say)})}
- if(extra)chatAdd('ai',extra);
+ if(S.ai.talk){if(say){chatAdd('ai',String(say));CHAT.hist.push({role:'assistant',content:String(say)})}if(extra)chatAdd('ai',extra)}
  doMove(chosen);
  /* после хода нейросети нужно переставить утку, если правило активно */
  if(S.rules.duck&&duckPend){
@@ -1635,15 +1663,13 @@ async function botAI(){
   }else{duckPend=0;fin(false)}
  }
  return true}
-const AV_EMOJIS=['😀','😎','🤖','🧠','🐱','🦊','🐸','⚡','♟️','👑','🔥','🌟'];
 function avHtml(kind){
- /* kind: me | ai | peer */
- let src,em;
- if(kind==='ai'){src=S.avAI;em=S.avAIEmoji||'🤖'}
- else if(kind==='peer'){em='👤';src=null}
- else{src=S.avMe;em=S.avMeEmoji||'😀'}
+ let src=null,letter='?';
+ if(kind==='ai'){src=S.avAI;letter='AI'}
+ else if(kind==='peer'){letter='P'}
+ else{src=S.avMe;letter=(NET.myName||'Я').slice(0,1).toUpperCase()}
  if(src)return `<span class="av"><img src="${src}" alt=""></span>`;
- return `<span class="av">${em}</span>`;
+ return `<span class="av" style="background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-size:11px;font-weight:800">${letter}</span>`;
 }
 function chatAdd(who,text,name){
  const line={who,text,name:name||(who==='ai'?'Нейросеть':who==='me'?(NET.myName||'Я'):''),ts:Date.now()};
@@ -1689,16 +1715,21 @@ async function sendChat(){
  }
 }
 function avatarSettings(){
- const me=S.avMeEmoji||'😀',ai=S.avAIEmoji||'🤖';
+ const ph=s=>s?`<img src="${s}" alt="">`:'<span style="opacity:.5;font-size:20px">+</span>';
  return `<h3>Аватарки</h3>
-<p class="hint">Для тебя и нейросети в общем чате. Можно эмодзи или своё фото.</p>
-<div class="avatar-row"><span>Ты:</span>${AV_EMOJIS.map(e=>`<button type="button" class="avatar-pick ${me===e&&!S.avMe?'on':''}" data-a="avemoji" data-v="me:${e}">${e}</button>`).join('')}
-<label class="avatar-pick ${S.avMe?'on':''}" title="Загрузить фото" for="avme"><input type="file" accept="image/*" id="avme" hidden>📷</label>
+<p class="hint">Загрузи фото для себя и для нейросети. Большие снимки с телефона сжимаются автоматически.</p>
+<div class="avatar-row">
+<span>Ты:</span>
+<label class="avatar-pick ${S.avMe?'on':''}" title="Загрузить" for="avme">${ph(S.avMe)}</label>
+<input type="file" accept="image/*" id="avme" hidden>
+${S.avMe?`<button type="button" data-a="avclear" data-v="me">Сбросить</button>`:''}
 </div>
-<div class="avatar-row"><span>ИИ:</span>${AV_EMOJIS.map(e=>`<button type="button" class="avatar-pick ${ai===e&&!S.avAI?'on':''}" data-a="avemoji" data-v="ai:${e}">${e}</button>`).join('')}
-<label class="avatar-pick ${S.avAI?'on':''}" title="Загрузить фото" for="avai"><input type="file" accept="image/*" id="avai" hidden>📷</label>
-</div>
-<p class="hint">Текущие: ты ${S.avMe?'📷':me} · ИИ ${S.avAI?'📷':ai}</p>`;
+<div class="avatar-row">
+<span>ИИ:</span>
+<label class="avatar-pick ${S.avAI?'on':''}" title="Загрузить" for="avai">${ph(S.avAI)}</label>
+<input type="file" accept="image/*" id="avai" hidden>
+${S.avAI?`<button type="button" data-a="avclear" data-v="ai">Сбросить</button>`:''}
+</div>`;
 }
 
 async function aiTest(){const el=$('#aistat');if(el)el.textContent='Проверяю '+aiEndpoint()+' …';const r=await aiPost([{role:'user',content:'Ответь одним словом: ок'}],{timeout:S.ai.timeout||60000,jsonMode:false});const e2=$('#aistat');if(e2)e2.textContent=r==null?('Нет связи: '+(AI_LAST_ERROR||'ошибка')):('Связь есть: '+r.trim().slice(0,80))}
@@ -1726,11 +1757,17 @@ const aiSettings=()=>{
 <option value="120000" ${+S.ai.timeout==120000?'selected':''}>120 с</option>
 </select></label>
 <label>Стиль ответов<textarea data-ai="persona" rows="3" style="width:100%">${esc(S.ai.persona)}</textarea></label>
-<label><input type="checkbox" data-ai="chat" ${S.ai.chat?'checked':''}> Чат с нейросетью</label>
+<div class="mode-card" style="margin:12px 0">
+<b>Речь нейросети (токены / деньги)</b>
+<label style="margin-top:8px"><input type="checkbox" data-ai="silent" ${!S.ai.chat&&!S.ai.talk?'checked':''}> <b>Тихий режим</b> — только ходит, ничего не пишет</label>
+<label><input type="checkbox" data-ai="chat" ${S.ai.chat?'checked':''}> Отвечать в чате, когда пишешь ей</label>
+<label><input type="checkbox" data-ai="talk" ${S.ai.talk?'checked':''}> Комментировать свои ходы в партии</label>
+<p class="hint" style="margin:6px 0 0">Тихий режим выключает оба пункта выше. Ходы по API остаются; текст и лишний JSON не запрашиваются.</p>
+</div>
 <label><input type="checkbox" data-ai="strict" ${S.ai.strict?'checked':''}> Строгий режим: только легальные ходы</label>
 <label><input type="checkbox" data-ai="hybrid" ${S.ai.hybrid?'checked':''}> Гибрид с движком: подменять совсем слабые ходы модели</label>
 <label><input type="checkbox" data-ai="vision" ${S.ai.vision?'checked':''}> Картинка доски (для мультимодальных: DeepSeek-VL и т.п.)</label>
-<p class="hint">Строгий + гибрид — лучший баланс. Vision шлёт PNG доски; нужна vision-модель (не обычный chat-only). Без строгого режима человек тоже может «вольные» ходы, если у кого-то включена нейросеть.</p>
+<p class="hint">Строгий + гибрид — лучший баланс. Vision шлёт PNG; нужна vision-модель. Без строгого режима человек тоже может ходить «вольными» ходами, если у кого-то включена нейросеть.</p>
 <div class="row"><button data-a="aitest" class="on">Проверить подключение</button></div>
 <p id="aistat" class="hint">Проверка шлёт короткий запрос. Итоговый URL: <code style="word-break:break-all">${esc(aiEndpoint()||'—')}</code></p>
 <p class="hint"><b>Zveno:</b> зарегистрируйся на zveno.ai → API keys → вставь ключ. Модель например <code>openai/gpt-4o-mini</code>. URL: <code>https://api.zveno.ai/v1</code>.<br>
@@ -1889,36 +1926,45 @@ function netBind(conn,asHost){
  }
  render();
 }
-function netCreatePeer(serverIdx,onReady){
+function netCreatePeer(serverIdx,onReady,preferId){
  if(typeof Peer==='undefined'){NET.status='PeerJS не в файле';render();return}
  if(NET.peer){try{NET.peer.destroy()}catch(e){}NET.peer=null}
  const srv=PEER_SERVERS[serverIdx]||{};
  NET.status='Подключение к серверу '+(srv.host||'default')+'…';render();
  let p;
- try{p=new Peer(peerConfig(srv))}catch(e){NET.status='Не удалось создать Peer: '+e;render();return}
+ try{p=preferId?new Peer(preferId,peerConfig(srv)):new Peer(peerConfig(srv))}catch(e){NET.status='Не удалось создать Peer: '+e;render();return}
  NET.peer=p;
  const fail=e=>{
   const t=(e&&e.type)||String(e);
+  /* id занят / недоступен — создаём новый без preferId */
+  if(preferId&&(t==='unavailable-id'||t==='invalid-id'||t==='peer-unavailable')){
+   NET.status='Старый код занят — создаю новый…';
+   setTimeout(()=>netCreatePeer(serverIdx,onReady,null),400);
+   return;
+  }
   NET.status='Peer error: '+t;
   if(serverIdx+1<PEER_SERVERS.length){
    NET.status+=' — пробую другой сервер…';
-   setTimeout(()=>netCreatePeer(serverIdx+1,onReady),500);
+   setTimeout(()=>netCreatePeer(serverIdx+1,onReady,preferId),500);
   }else{
    NET.status='Все сигнальные серверы недоступны (VPN/WebView/сеть). Используй «Получить ссылку» или отключи VPN.';
    render();
   }
  };
  p.on('error',fail);
- p.on('open',id=>{NET.room=id;NET.status='Комната готова';onReady&&onReady(id);render()});
+ p.on('open',id=>{NET.room=id;try{sessionStorage.setItem('netRoom',id)}catch(e){}NET.status='Комната готова';onReady&&onReady(id);render()});
 }
 function netHost(){
  NET.role='host';NET.conns=[];NET.seats={};NET.lobby=1;NET.chat=NET.chat||[];NET.myColor=null;NET.dockOpen=1;NET.unread=0;
+ let prefer=null;
+ try{prefer=sessionStorage.getItem('netRoom')||null}catch(e){}
+ if(prefer&&!confirm('Попробовать снова открыть комнату с прошлым кодом?\n\n'+prefer+'\n\nОк — тот же код (если свободен). Отмена — новый код.'))prefer=null;
  netCreatePeer(0,id=>{
-  NET.status='Код комнаты: '+id+' — отправь друзьям. Выбери себе цвет ниже.';
+  NET.status='Код: '+id+' — отправь друзьям. Выбери цвет и «Начать игру».';
   NET.peer.on('connection',c=>{
    c.on('open',()=>netBind(c,true));
   });
- });
+ },prefer);
 }
 function netJoin(code){
  code=(code||'').trim();if(!code){alert('Введи код комнаты');return}
@@ -1985,7 +2031,7 @@ function netChatSend(text){
  if(netIsHost())netBroadcast(msg);
  else if(NET.conns[0]&&NET.conns[0].conn)NET.conns[0].conn.send(msg);
  /* если чат с ИИ включён — дублируем вопрос нейросети */
- if(S.ai.chat&&S.ai.url){
+ if(S.ai.chat&&S.ai.url&&!S.ai.silent){
   const i=CHAT.log.length;
   CHAT.log.push({who:'ai',name:'Нейросеть',text:'Нейросеть думает…',ts:Date.now()});
   NET.chat.push({who:'ai',name:'Нейросеть',text:'Нейросеть думает…',ts:Date.now()});
@@ -2087,7 +2133,7 @@ ${NET.status?`<p class="hint">${esc(NET.status)}</p>`:''}
 ${NET.peer?`<p class="hint">Места (${pl.length} игроков):</p><div class="row" style="flex-wrap:wrap">${seatsHtml}</div>`:''}
 ${netIsHost()&&NET.lobby?`<div class="row"><button data-a="netstart" class="on">Начать игру</button></div><p class="hint">Выбери цвет кнопкой выше, иначе при старте займётся первое свободное место.</p>`:''}
 ${NET.peer&&!NET.lobby?`<p class="hint">Партия идёт. Ходишь только за свой цвет. Чат — кнопка 💬 справа внизу.</p>`:''}
-<p class="hint">Если PeerJS недоступен — «Получить ссылку».</p>`;
+<p class="hint">Код комнаты живёт, пока хост онлайн. После выхода обоих код можно попробовать открыть снова (если PeerJS ещё держит id) или создать новый. Если PeerJS недоступен — «Получить ссылку».</p>`;
 }
 
 function botMove(){
@@ -2114,7 +2160,7 @@ function botMove(){
 function botCheck(){if(over||pend||S.paused||bbusy||cur!=REC.length-1||anMode)return;
  if(duckPend){if(S.ctl[turn]=='h')return;bbusy=1;$('#st').textContent='Бот двигает утку…';setTimeout(()=>{bbusy=0;botMove()},350);return}
  if(S.ctl[turn]=='h')return;bbusy=1;
- if(S.ctl[turn]=='a'){$('#st').textContent='Нейросеть думает…';const thinkI=S.ai.chat?chatAdd('ai','Нейросеть думает…'):-1;setTimeout(async()=>{let moved=false;try{moved=!!(await botAI())}catch(e){chatAdd('ai','Ошибка нейросети: '+(AI_LAST_ERROR||String(e)))}finally{bbusy=0;if(thinkI>=0&&CHAT.log[thinkI]&&CHAT.log[thinkI].text==='Нейросеть думает…'){CHAT.log.splice(thinkI,1);chatRender()}if(moved)botCheck();else $('#st').textContent='Ход ожидает ответа API — фигуры не передвинуты.'}},600);return}
+ if(S.ctl[turn]=='a'){$('#st').textContent='Нейросеть думает…';const thinkI=S.ai.talk?chatAdd('ai','Нейросеть думает…'):-1;setTimeout(async()=>{let moved=false;try{moved=!!(await botAI())}catch(e){chatAdd('ai','Ошибка нейросети: '+(AI_LAST_ERROR||String(e)))}finally{bbusy=0;if(thinkI>=0&&CHAT.log[thinkI]&&CHAT.log[thinkI].text==='Нейросеть думает…'){CHAT.log.splice(thinkI,1);chatRender()}if(moved)botCheck();else $('#st').textContent='Ход ожидает ответа API — фигуры не передвинуты.'}},600);return}
  $('#st').textContent='Бот думает…';setTimeout(()=>{bbusy=0;botMove()},500)}
 
 /* ========== АНАЛИЗАТОР ПАРТИЙ ========== */
@@ -2418,7 +2464,7 @@ document.addEventListener('click',e=>{
  else if(a=='delpos'){delPosition(v);return}
  else if(a=='analyze'){runAnalysis();return}
  else if(a=='send'){sendChat();return}
- else if(a=='avemoji'){const[side,em]=v.split(':');if(side==='me'){S.avMe=null;S.avMeEmoji=em}else{S.avAI=null;S.avAIEmoji=em}save();render();return}
+ else if(a=='avclear'){if(v==='me'){S.avMe=null;S.avMeEmoji=null}else{S.avAI=null;S.avAIEmoji=null}save();render();return}
  else if(a=='genpiece'){generateAIPiece();return}
  else if(a=='aitest'){aiTest();return}
  else if(a=='aipreset'){const q=$('#aipreset')?.value||'zveno';const p=AI_PRESETS[q]||AI_PRESETS.custom;S.ai.preset=q;S.ai.url=p.url;S.ai.model=p.model;save();render();return}
@@ -2516,18 +2562,25 @@ return}
  if(t&&(t.id==='avme'||t.id==='avai')&&t.files&&t.files[0]){
   const side=t.id==='avme'?'me':'ai';
   const f=t.files[0];
-  if(f.size>800000){alert('Картинка слишком большая (макс ~800КБ)');return}
   const rd=new FileReader();
+  rd.onerror=()=>alert('Не удалось прочитать файл');
   rd.onload=()=>{
    const img=new Image();
+   img.onerror=()=>alert('Формат не поддерживается. Попробуй JPG или PNG.');
    img.onload=()=>{
-    const cv=document.createElement('canvas');cv.width=cv.height=96;
-    const x=cv.getContext('2d');
-    const s=Math.min(img.width,img.height);const sx=(img.width-s)/2,sy=(img.height-s)/2;
-    x.drawImage(img,sx,sy,s,s,0,0,96,96);
-    const url=cv.toDataURL('image/jpeg',0.85);
-    if(side==='me'){S.avMe=url;S.avMeEmoji=null}else{S.avAI=url;S.avAIEmoji=null}
-    save();render();
+    try{
+     const size=96;
+     const cv=document.createElement('canvas');cv.width=cv.height=size;
+     const x=cv.getContext('2d');
+     const s=Math.min(img.width,img.height)||1;
+     const sx=(img.width-s)/2,sy=(img.height-s)/2;
+     x.drawImage(img,sx,sy,s,s,0,0,size,size);
+     let q=0.82,url=cv.toDataURL('image/jpeg',q);
+     /* если вдруг всё ещё жирно — сильнее жмём */
+     while(url.length>60000&&q>0.4){q-=0.12;url=cv.toDataURL('image/jpeg',q)}
+     if(side==='me'){S.avMe=url;S.avMeEmoji=null}else{S.avAI=url;S.avAIEmoji=null}
+     save();render();
+    }catch(e){alert('Ошибка сжатия: '+e)}
    };
    img.src=rd.result;
   };
@@ -2537,7 +2590,15 @@ return}
  if(t.id=='fl'){if(t.files[0])up(t.files[0]);return}
  if(t.dataset&&t.dataset.sv){S.sv[t.dataset.sv]=t.value;save();playS(t.dataset.sv,t.value);return}
  if(t.dataset&&t.dataset.ui){S.ui=t.value;theme();save();return}
- if(t.dataset&&t.dataset.ai){S.ai[t.dataset.ai]=t.type=='checkbox'?(t.checked?1:0):(t.dataset.ai=='timeout'?+t.value:t.value);save();if(t.dataset.ai=='chat')updChat();return}
+ if(t.dataset&&t.dataset.ai){
+  if(t.dataset.ai==='silent'){
+   if(t.checked){S.ai.chat=0;S.ai.talk=0}else{/* снимаем тихий — чат не включаем сами */}
+   save();updChat();render();return
+  }
+  S.ai[t.dataset.ai]=t.type=='checkbox'?(t.checked?1:0):(t.dataset.ai=='timeout'?+t.value:t.value);
+  if(t.dataset.ai==='chat'||t.dataset.ai==='talk'){if(S.ai.chat||S.ai.talk){/* not silent */}}
+  save();if(t.dataset.ai=='chat')updChat();if(t.dataset.ai==='chat'||t.dataset.ai==='talk')render();return
+ }
  if(t.dataset&&t.dataset.c){S[t.dataset.c]=t.value;theme();save();return}
  if(t.dataset&&t.dataset.fog){const k=t.dataset.fog;S.fog[k]=t.type=='checkbox'?(t.checked?1:0):+t.value;save();return}
  if(t.dataset&&t.dataset.rule){const k=t.dataset.rule;S.rules[k]=t.type=='checkbox'?(t.checked?1:0):(k==='checksToWin'?+t.value:t.value);save();return}
@@ -2571,7 +2632,7 @@ try{
  C=s.C||{};
 }catch(e){}
 ensureBoards();
-S.ai={...AI_DEF,...(S.ai||{})};if(!S.ai.preset)S.ai.preset='zveno';if(!S.avMeEmoji&&!S.avMe)S.avMeEmoji='😀';if(!S.avAIEmoji&&!S.avAI)S.avAIEmoji='🤖';if(S.ai.proxy==null)S.ai.proxy='';if(S.ai.hybrid==null)S.ai.hybrid=1;if(S.ai.vision==null)S.ai.vision=0;
+S.ai={...AI_DEF,...(S.ai||{})};if(!S.ai.preset)S.ai.preset='zveno';if(!S.avMeEmoji&&!S.avMe)S.avMeEmoji='😀';if(!S.avAIEmoji&&!S.avAI)S.avAIEmoji='🤖';if(S.ai.proxy==null)S.ai.proxy='';if(S.ai.hybrid==null)S.ai.hybrid=1;if(S.ai.vision==null)S.ai.vision=0;if(S.ai.talk==null)S.ai.talk=0;if(S.ai.chat==null)S.ai.chat=0;
 S.bh=8;S.bw=8;S.players=2;S.curBoard='std';
 S.rules={...DEF_RULES};S.fog={on:0,pass:0,radius:2,lines:1,diag:1,around:1,hidePieces:1,silhouettes:0,autoHide:1,delay:400};
 S.checksCount={w:0,b:0};specials=[];
