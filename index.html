@@ -867,6 +867,9 @@ const dec=s=>{let H=BH(),W=BW(),body=s;
  if(m){H=+m[1];W=+m[2];body=m[3];S.bh=H;S.bw=W}
  const b=empty(H,W);body.split(',').forEach((x,i)=>{if(!x)return;const moved=x.endsWith('*');if(moved)x=x.slice(0,-1);const rr=i/W|0,cc=i%W;if(rr<H&&cc<W){b[rr][cc]={t:x.slice(1),c:x[0]};if(moved)b[rr][cc].m=1}});return b};
 const pack=()=>btoa(unescape(encodeURIComponent(JSON.stringify({C,b:enc(B),s:enc(start),t:turn,e:ep,l:last,o:over,rules:S.rules,fog:S.fog,checks:S.checksCount,specials,curBoard:S.curBoard,colors:[S.l,S.d],cap:CAPT,bh:BH(),bw:BW(),players:S.players||2,duck,duckPend,crystalHold:S.crystalHold||{}}))));
+const packZ=async()=>{const json=decodeURIComponent(escape(atob(pack())));const cs=new Blob([new TextEncoder().encode(json)]).stream().pipeThrough(new CompressionStream('deflate-raw'));const u8=new Uint8Array(await new Response(cs).arrayBuffer());let b='';u8.forEach(x=>b+=String.fromCharCode(x));return 'z.'+btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const unpackZ=async z=>{let t=z.replace(/^z\./,'').replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const bin=atob(t),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);const cs=new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate-raw'));const json=await new Response(cs).text();unpack(btoa(unescape(encodeURIComponent(json))))};
+const unpackAny=z=>z.startsWith('z.')?unpackZ(z):new Promise(r=>r(unpack(z)));
 const unpack=z=>{const d=JSON.parse(decodeURIComponent(escape(atob(z))));C=d.C||{};mkP();if(d.bh)S.bh=+d.bh;if(d.bw)S.bw=+d.bw;if(d.players)S.players=+d.players;start=dec(d.s);B=dec(d.b);turn=d.t;ep=d.e;last=d.l;over=d.o||'';note='';if(d.rules)S.rules={...DEF_RULES,...d.rules};if(d.fog)S.fog={...S.fog,...d.fog};S.checksCount=d.checks||{};playersList().forEach(c=>{if(S.checksCount[c]==null)S.checksCount[c]=0});specials=d.specials||[];if(d.curBoard)S.curBoard=d.curBoard;if(d.colors&&d.colors[0]&&d.colors[1]){S.l=d.colors[0];S.d=d.colors[1];theme()}CAPT=d.cap||{};playersList().forEach(c=>{if(!CAPT[c])CAPT[c]=[]});duck=d.duck||null;duckPend=d.duckPend||0;S.crystalHold=d.crystalHold||{};sel=null;mv=[];pend=null;dropSel=null;fogged=0;if(!playersList().includes(side))side='w';REC=[snap()];cur=0;save()};
 
 
@@ -2160,11 +2163,10 @@ document.addEventListener('click',e=>{
  else if(a=='flip'){S.flip^=1;save()}
  else if(a=='duo'){S.duo^=1;save()}
  else if(a=='pk')return pick(v);
- else if(a=='cget'){const u=location.href.split('#')[0]+'#g='+pack();$('#cd').value=u;try{navigator.clipboard.writeText(u).catch(()=>{})}catch(x){}return}
+ else if(a=='cget'){packZ().then(z=>{const u=location.href.split('#')[0]+'#g='+z;$('#cd').value=u;copyTxt(u)}).catch(()=>{});return}
  else if(a=='tgs'){let base=location.href.split('#')[0];if(!/^https?:/.test(base)){base=S.site||prompt('Адрес, где открыта игра (https://...):','')||'';if(!base)return;S.site=base;save()}
- const u=base+'#g='+pack(),tg='https://t.me/share/url?url='+encodeURIComponent(u)+'&text='+encodeURIComponent('Ход в шахматах: открой ссылку и сделай ход');
- window.open(tg,'_blank');return}
- else if(a=='cset'){try{unpack($('#cd').value.split('g=').pop().trim())}catch(x){note='Не удалось прочитать ссылку'}}
+ const w=window.open('','_blank');packZ().then(z=>{const u=base+'#g='+z,tg='https://t.me/share/url?url='+encodeURIComponent(u)+'&text='+encodeURIComponent('Ход в шахматах: открой ссылку и сделай ход');if(w)w.location=tg;else window.open(tg,'_blank')}).catch(()=>{});return}
+ else if(a=='cset'){unpackAny($('#cd').value.split('g=').pop().trim()).then(()=>render()).catch(()=>{note='Не удалось прочитать ссылку';render()});return}
  else if(a=='add')edit();
  else if(a=='shp'){const c=enc64({pack:'',items:[pieceOut(v)]});SHR=c;copyTxt(c);msg('Код фигуры скопирован')}
  else if(a=='shf'){const items=inFolder(S.pf).filter(k=>!STD[k]).map(pieceOut);const boards=Object.values(S.boards||{}).filter(b=>b.id!=='std'&&(b.f||'mine')===S.pf);const positions=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);if(!items.length&&!boards.length&&!positions.length){alert('В папке пока нет фигур, досок и позиций');return}const c=enc64({pack:folderName(S.pf),items,boards,positions});SHR=c;copyTxt(c);msg('Папка скопирована')}
@@ -2263,7 +2265,7 @@ if(!S.ctl)S.ctl={w:'h',b:'h'};
 S.ctl={w:S.ctl.w||'h',b:S.ctl.b||'h'}; /* на старте только 2 стороны */
 side='w';tool='p';tab='play';
 mkP();start=std();newG();
-try{if(location.hash.startsWith('#g='))unpack(location.hash.slice(3))}catch(e){}
+if(location.hash.startsWith('#g='))unpackAny(location.hash.slice(3)).then(()=>render()).catch(()=>{});
 document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='chatin'){e.preventDefault();sendChat()}if(e.key=='Enter'&&e.target.id=='netchatin'){e.preventDefault();netChatSend(e.target.value);e.target.value=''}});
 theme();render();
 </script>
