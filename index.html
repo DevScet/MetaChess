@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.8</title>
+<title>MetaChess v2.9</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -227,6 +227,14 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 .mode-card,.pack-card,#chatlog,#an .ml{background:rgba(12,18,36,.65);border-color:var(--line);backdrop-filter:blur(8px)}
 .endov{background:rgba(7,11,22,.82);backdrop-filter:blur(6px)}
 
+
+.pc .life{position:absolute;right:1px;top:1px;min-width:12px;height:12px;padding:0 3px;border-radius:8px;
+ font:800 9px/12px Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f43f5e,#fb7185);color:#fff;
+ box-shadow:0 0 6px rgba(244,63,94,.5);z-index:5;pointer-events:none;text-align:center}
+.pc .life.full{background:linear-gradient(135deg,#34d399,#6ee7b7);box-shadow:0 0 6px rgba(52,211,153,.45)}
+#grwrap,#ghwrap{touch-action:none;overflow:auto;max-width:100%;padding:6px;border:1px dashed var(--line);border-radius:10px;margin:6px 0;background:rgba(12,18,36,.35)}
+#grwrap .hint-zoom,#ghwrap .hint-zoom{font-size:12px;opacity:.8;margin:0 0 6px;line-height:1.3}
+
 </style>
 <script>
 /* PeerJS 1.5.4 inlined — works from content:// and file:// */
@@ -244,7 +252,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <main>
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.8</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.9</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bd"></div><div id="capB" class="cap"></div>
 <div id="an"></div>
@@ -278,7 +286,7 @@ r:{name:'Ладья',m:ray(O,0)},
 b:{name:'Слон',m:ray(D,0)},
 n:{name:'Конь',m:KN},
 p:{name:'Пешка',pw:1,m:[[0,1,1]],cm:[[1,1,1],[-1,1,1]],ev:{when:'far',do:'pick'}}};
-const VAL={k:0,q:9,r:5,b:3,n:3,p:1};for(const k in VAL)STD[k].val=VAL[k];
+const VAL={k:0,q:9,r:5,b:3,n:3,p:1};for(const k in VAL)STD[k].val=VAL[k];STD.k.royal=1;STD.r.rookish=1;
 for(const k in ART){STD[k].sw=bld(ART[k],{o:'0',h:'1',f:'2',s:'3'});STD[k].sb=bld(ART[k],{o:'0',h:'4',f:'5',s:'6'})};
 STD.n.sw='........................000..........0003330.......0033222330.....033223112330...0322212111230...0321111111230...032000111120.....00..0111230.........011230.........0111230........0112220.......003333333000...01222222222230..03333333333330..00000000000000.';
 STD.n.sb='........................000..........0006660.......0066555660.....066556445660...0655545444560...0654444444560...065000444450.....00..0444560.........044560.........0444560........0445550.......006666666000...04555555555560..06666666666660..00000000000000.';
@@ -367,9 +375,13 @@ const url=(s,tintKey)=>{
   return c.toDataURL('image/png');
  })());
 };
+const pieceHp=p=>{if(!p)return 0;if(p.hp!=null)return +p.hp;const d=P[p.t];return d&&d.lives?+d.lives:0};
+const pieceMaxHp=p=>{const d=P[p&&p.t];return d&&d.lives?+d.lives:0};
 const pc=p=>{
  const tintKey=(p.c==='r'||p.c==='g'||p.c==='y')?p.c:null;
- return `<i class="pc ${p.c}"><img draggable="false" src="${url(spr(p.t,p.c),tintKey)}" alt=""></i>`;
+ const hp=pieceHp(p),mx=pieceMaxHp(p);
+ const badge=mx>0?`<span class="life ${hp>=mx?'full':''}" title="Жизни: ${hp}/${mx}">${hp}</span>`:'';
+ return `<i class="pc ${p.c}">${badge}<img draggable="false" src="${url(spr(p.t,p.c),tintKey)}" alt=""></i>`;
 };
 const theme=()=>[['l','l'],['d','d'],['acc','ui']].forEach(([v,k])=>S[k]?document.documentElement.style.setProperty('--'+v,S[k]):document.documentElement.style.removeProperty('--'+v));
 let AC;
@@ -731,49 +743,168 @@ function placePortalPair(r1,c1,r2,c2){
 function legal(r,c,X=B,att){
  const H=BH(),W=BW();
  const p=X[r][c],d=P[p.t],s=(p.c==='b'||p.c==='g')?-1:1,o=[];
- if(d&&(d.fixed||d.immobile||d.ability==='fixed'))return o; /* неподвижная фигура — только стоит и блокирует */
+ if(d&&(d.fixed||d.immobile||d.ability==='fixed'))return o;
  const isDuck=(i,k)=>S.rules.duck&&duck&&duck.r===i&&duck.c===k;
  const walk=(L,md)=>{for(const[dx,dy,n]of L){
   const g=gcd(Math.abs(dx),Math.abs(dy)),ux=dx/g,ur=-dy*s/g;
   for(let j=1;j<=(n?n*g:Math.max(H,W));j++){
    const i=r+ur*j,k=c+ux*j;
    if(i<0||i>=H||k<0||k>=W)break;
-   if(isDuck(i,k))break; /* утка блокирует, взять нельзя */
+   if(isDuck(i,k))break;
    const q=X[i][k];
    if(j%g){if(q&&!d.jump)break;continue}
    if(!q){if(md!=2||(d.pw&&ep&&ep.c!=p.c&&ep.sq[0]==i&&ep.sq[1]==k))o.push([i,k])}
-   else{const imm=P[q.t]&&(P[q.t].immortal||P[q.t].ability==='immortal');if(q.c!=p.c&&md!=1&&!imm&&(att||!P[q.t].royal))o.push([i,k]);if(!d.jump||imm)break}
+   else{const imm=P[q.t]&&(P[q.t].immortal||P[q.t].ability==='immortal');if(q.c!=p.c&&md!=1&&!imm&&(att||!P[q.t].royal||pieceHp(q)>0))o.push([i,k]);if(!d.jump||imm)break}
   }}};
  d.cm?(walk(d.m,1),walk(d.cm,2)):walk(d.m,0);
  if(d.pw&&!p.m&&!S.rules.noPawnDouble&&d.m.some(a=>!a[0]&&a[1]==1)){const f=r-s,f2=r-2*s;if(X[f]&&!X[f][c]&&!isDuck(f,c)&&X[f2]&&!X[f2][c]&&!isDuck(f2,c))o.push([f2,c])}
- if(d.ability=='teleport'){for(let i=0;i<H;i++)for(let k=0;k<W;k++){if(isDuck(i,k))continue;const q=X[i][k];if(q&&(P[q.t].immortal||P[q.t].ability==='immortal'))continue;if((!q||q.c!=p.c)&&(att||!q||!P[q.t].royal)&&!(i==r&&k==c))o.push([i,k])}}
+ if(d.ability=='teleport'){for(let i=0;i<H;i++)for(let k=0;k<W;k++){if(isDuck(i,k))continue;const q=X[i][k];if(q&&(P[q.t].immortal||P[q.t].ability==='immortal'))continue;if((!q||q.c!=p.c)&&(att||!q||!P[q.t].royal||pieceHp(q)>0)&&!(i==r&&k==c))o.push([i,k])}}
  return o}
-const inCheck=(X,col)=>{if(!S.rules.check)return false;const W=BW();const ks=[];X.forEach((row,r)=>row.forEach((p,c)=>p&&p.c==col&&P[p.t].royal&&ks.push(r*W+c)));if(!ks.length&&!S.rules.multiKing)return false;return ks.length&&X.some((row,r)=>row.some((p,c)=>p&&p.c!=col&&legal(r,c,X,1).some(m=>ks.includes(m[0]*W+m[1]))))};
-function castle(r,c){const p=B[r][c],o=[],H=BH(),W=BW();
+const inCheck=(X,col)=>{if(!S.rules.check)return false;const W=BW();const ks=[];X.forEach((row,r)=>row.forEach((p,c)=>p&&p.c==col&&P[p.t]&&P[p.t].royal&&ks.push(r*W+c)));if(!ks.length&&!S.rules.multiKing)return false;return ks.length&&X.some((row,r)=>row.some((p,c)=>p&&p.c!=col&&legal(r,c,X,1).some(m=>ks.includes(m[0]*W+m[1]))))};
+function castle(r,c){
+ const p=B[r][c],o=[],H=BH(),W=BW(),d=P[p.t];
+ if(!S.rules.castle||!d||!d.royal||p.m)return o;
  const home=p.c==='b'||p.c==='g'?0:H-1;
- const kingFile=W===8?4:Math.floor((W-1)/2);
- if(!S.rules.castle||p.t!='k'||p.m||c!=kingFile||r!=home||inCheck(B,p.c))return o;
- for(const d of[1,-1]){const rc=d>0?W-1:0,rk=B[r][rc];
-  if(!rk||rk.t!='r'||rk.c!=p.c||rk.m)continue;
-  let ok=1;for(let x=c+d;x!=rc;x+=d)if(B[r][x])ok=0;
-  for(const x of[c+d,c+2*d]){if(x<0||x>=W){ok=0;break}const X=clone(B);X[r][x]=X[r][c];X[r][c]=null;if(inCheck(X,p.c))ok=0}
-  if(ok)o.push([r,c+2*d])}
- return o}
+ if(r!==home)return o;
+ const hp=pieceHp(p);
+ if(inCheck(B,p.c)&&hp<=0)return o; /* с жизнями можно рокировать из-под шаха */
+ for(const dir of[1,-1]){
+  let rookC=-1;
+  for(let x=c+dir;x>=0&&x<W;x+=dir){
+   const q=B[r][x];
+   if(!q)continue;
+   if(q.c!==p.c)break;
+   if(P[q.t]&&P[q.t].rookish&&!q.m){rookC=x;break}
+   break;
+  }
+  if(rookC<0)continue;
+  let ok=1;
+  const step=dir>0?1:-1;
+  for(let x=c+step;x!==rookC;x+=step)if(B[r][x])ok=0;
+  const land=c+2*dir;
+  if(land<0||land>=W)ok=0;
+  if(ok&&hp<=0){
+   for(const x of[c+dir,land]){
+    if(x<0||x>=W){ok=0;break}
+    const X=clone(B);X[r][x]=X[r][c];X[r][c]=null;if(inCheck(X,p.c))ok=0;
+   }
+  }
+  if(ok)o.push([r,land]);
+ }
+ return o;
+}
+function hurtPiece(X,r,c){
+ /* урон: жизни → −1, иначе снять */
+ const p=X[r]&&X[r][c];if(!p)return '';
+ if(P[p.t]&&(P[p.t].immortal||P[p.t].ability==='immortal'))return '';
+ const hp=pieceHp(p);
+ if(hp>0){p.hp=hp-1;return (P[p.t].name||'')+' теряет жизнь ('+p.hp+')'}
+ X[r][c]=null;return '';
+}
 function fire(X,r,c,cap){
- const p=X[r][c],d=P[p.t],e=d.ev;if(!e||!e.when)return'';
+ const p=X[r][c],d=P[p.t],e=d&&d.ev;if(!e||!e.when)return'';
  const w=e.when;if(!(w=='far'?((p.c==='b'||p.c==='g')?r===BH()-1:r===0):w=='edge'?r===0||r===BH()-1||c===0||c===BW()-1:cap))return'';
  const nt=d.name+' '+{to:'превращается',pick:'превращается',die:'исчезает',boom:'взрывается'}[e.do];
  if(e.do=='to')p.t=P[e.to]?e.to:'q';
  else if(e.do=='pick'){if(X===B)pend=[r,c]}
  else if(e.do=='die')X[r][c]=null;
- else for(let i=r-1;i<=r+1;i++)for(let j=c-1;j<=c+1;j++)if(X[i]&&X[i][j]&&!P[X[i][j].t].royal)X[i][j]=null;
+ else for(let i=r-1;i<=r+1;i++)for(let j=c-1;j<=c+1;j++){
+  if(!(X[i]&&X[i][j]))continue;
+  if(i===r&&j===c)continue;
+  hurtPiece(X,i,j);
+ }
  return nt}
-const mvApply=(X,a,b,r,c)=>{const p=X[a][b];let cap=!!X[r][c];
+function tickRegen(p,kind,val){
+ if(!p||!P[p.t]||!P[p.t].lives)return;
+ const rg=P[p.t].regen;if(!rg||rg.mode==='none')return;
+ const mx=+P[p.t].lives||0;if(pieceHp(p)>=mx)return;
+ p.rg=p.rg||{caps:0,moves:0,pts:0};
+ if(kind==='caps')p.rg.caps=(p.rg.caps||0)+1;
+ if(kind==='moves')p.rg.moves=(p.rg.moves||0)+1;
+ if(kind==='pts')p.rg.pts=(p.rg.pts||0)+(val||0);
+ const needC=+rg.caps||0,needM=+rg.moves||0,needP=+rg.pts||0;
+ let ok=0;
+ if(rg.mode==='caps'&&needC&&p.rg.caps>=needC)ok=1;
+ if(rg.mode==='moves'&&needM&&p.rg.moves>=needM)ok=1;
+ if(rg.mode==='pts'&&needP&&p.rg.pts>=needP)ok=1;
+ if(rg.mode==='combo'){
+  const parts=[];
+  if(needC)parts.push(p.rg.caps>=needC);
+  if(needM)parts.push(p.rg.moves>=needM);
+  if(needP)parts.push(p.rg.pts>=needP);
+  if(parts.length&&parts.every(Boolean))ok=1;
+ }
+ if(ok){p.hp=Math.min(mx,pieceHp(p)+1);p.rg={caps:0,moves:0,pts:0}}
+}
+const mvApply=(X,a,b,r,c,opts={})=>{
+ const p=X[a][b];if(!p)return'';
+ const d=P[p.t];
+ let cap=!!X[r][c];
+ let note='';
+ /* взятие с места: цель снимается (или теряет жизнь), атакующий остаётся */
+ if(opts.sit||(d&&d.sitEat&&cap&&(a!==r||b!==c))){
+  const vic=X[r][c];
+  if(vic&&vic.c!==p.c){
+   const hp=pieceHp(vic);
+   if(hp>0){vic.hp=hp-1;note='Удар с места: цель теряет жизнь'}
+   else{X[r][c]=null;note='Удар с места'}
+   p.m=1;
+   tickRegen(p,'caps',1);tickRegen(p,'pts',(P[vic.t]&&P[vic.t].val)||1);
+   return note;
+  }
+ }
+ /* обычное взятие цели с жизнями: цель теряет жизнь, атакующий не встаёт */
+ if(cap&&X[r][c]&&X[r][c].c!==p.c){
+  const vic=X[r][c],hp=pieceHp(vic);
+  if(hp>0){
+   vic.hp=hp-1;p.m=1;
+   tickRegen(p,'caps',1);tickRegen(p,'pts',(P[vic.t]&&P[vic.t].val)||1);
+   return 'Цель выжила, −1 жизнь';
+  }
+ }
  if(p.pw&&!cap&&ep&&ep.sq[0]==r&&ep.sq[1]==c&&ep.c!=p.c){X[ep.pr][ep.pc]=null;cap=true}
+ /* шах: королевская с жизнями может ходить под шах, теряя жизнь */
+ const wasSafe=!inCheck(X,p.c);
  X[r][c]=p;X[a][b]=null;p.m=1;
- if(p.t=='k'&&a==r&&Math.abs(c-b)==2){const rc=c>b?7:0,k=X[r][rc];X[r][(b+c)/2]=k;X[r][rc]=null;if(k)k.m=1}
- return fire(X,r,c,cap)};
-const safe=(r,c)=>[...legal(r,c),...castle(r,c)].filter(([i,k])=>{const X=clone(B);mvApply(X,r,c,i,k);return!inCheck(X,B[r][c].c)});
+ if(d&&d.royal&&a===r&&Math.abs(c-b)===2){
+  const dir=c>b?1:-1;
+  let rookC=-1;
+  for(let x=c+dir;x>=0&&x<BW();x+=dir){
+   const q=X[r][x];
+   if(!q)continue;
+   if(q.c===p.c&&P[q.t]&&P[q.t].rookish){rookC=x;break}
+   break;
+  }
+  if(rookC>=0){
+   const mid=c-dir;
+   X[r][mid]=X[r][rookC];X[r][rookC]=null;if(X[r][mid])X[r][mid].m=1;
+  }
+ }
+ if(S.rules.check&&d&&d.royal&&pieceHp(p)>0&&inCheck(X,p.c)){
+  /* потеряли жизнь за ход под/через шах */
+  p.hp=pieceHp(p)-1;
+  note=(note?note+'. ':'')+'Ход ценой жизни';
+ }
+ tickRegen(p,'moves',1);
+ if(cap){/* material already handled above for live targets */}
+ return fire(X,r,c,cap)||note;
+};
+const safe=(r,c)=>{
+ const p=B[r][c],d=P[p.t],hp=pieceHp(p);
+ const moves=[...legal(r,c),...castle(r,c)];
+ return moves.filter(([i,k])=>{
+  const sit=d&&d.sitEat&&B[i][k]&&B[i][k].c!==p.c;
+  const X=clone(B);
+  mvApply(X,r,c,i,k,sit?{sit:1}:{});
+  if(!S.rules.check)return true;
+  if(!inCheck(X,p.c))return true;
+  /* королевские с жизнями могут ходить под шах */
+  if(d&&d.royal&&hp>0)return true;
+  /* удар с места не ставит тебя на битую клетку */
+  if(sit)return !inCheck(X,p.c);
+  return false;
+ });
+};
 function status(){
  if(S.rules.win==='checks'){
   const need=S.rules.checksToWin||3;
@@ -876,7 +1007,7 @@ function doDrop(r,c){
  const idx=hand.findIndex(x=>x.t===dropSel);
  if(idx<0)return;
  hand.splice(idx,1);
- B[r][c]={t:dropSel,c:turn,m:1};
+ B[r][c]={t:dropSel,c:turn,m:1,hp:(P[dropSel]&&P[dropSel].lives)?P[dropSel].lives:undefined};
  last=[['drop',dropSel],[r,c]];MOVES.push(['d',dropSel,r,c]);note='Сброс: '+P[dropSel].name;
  dropSel=null;sel=null;mv=[];
  if(S.rules.duck){duckPend=1;render();return}
@@ -891,7 +1022,11 @@ function go(r,c){
  }
  if(dropSel){if(mv.some(m=>m[0]==r&&m[1]==c))doDrop(r,c);return}
  const[a,b]=sel,p=B[a][b],dbl=p.pw&&Math.abs(r-a)==2,cp=!!B[r][c];
- const t0=p.t,before=cnt(B);last=[[a,b],[r,c]];note=mvApply(B,a,b,r,c)||'';capDiff(before,t0,p.c,p);
+ const t0=p.t,before=cnt(B);last=[[a,b],[r,c]];
+ const sit=!!(P[p.t]&&P[p.t].sitEat&&B[r][c]&&B[r][c].c!==p.c);
+ note=mvApply(B,a,b,r,c,sit?{sit:1}:{})||'';
+ capDiff(before,t0,p.c,p);
+
  if(S.rules.atomic&&cp){
   for(let i=r-1;i<=r+1;i++)for(let j=c-1;j<=c+1;j++)if(B[i]&&B[i][j]&&!P[B[i][j].t].royal)B[i][j]=null;
   if(B[r][c]&&!P[B[r][c].t].royal)B[r][c]=null;
@@ -942,11 +1077,24 @@ function startDrop(t){
 }
 
 /* ссылка на партию */
-const enc=b=>{const H=b.length,W=b[0]?b[0].length:BW();return H+'x'+W+';'+b.flat().map(p=>p?p.c+p.t+(p.m?'*':''):'').join(',')};
+const enc=b=>{const H=b.length,W=b[0]?b[0].length:BW();return H+'x'+W+';'+b.flat().map(p=>{if(!p)return'';let s=p.c+p.t+(p.m?'*':'');if(p.hp!=null&&+p.hp>=0)s+=':'+p.hp;return s}).join(',')};
 const dec=s=>{let H=BH(),W=BW(),body=s;
  const m=String(s).match(/^(\d+)x(\d+);([\s\S]*)$/);
  if(m){H=+m[1];W=+m[2];body=m[3];S.bh=H;S.bw=W}
- const b=empty(H,W);body.split(',').forEach((x,i)=>{if(!x)return;const moved=x.endsWith('*');if(moved)x=x.slice(0,-1);const rr=i/W|0,cc=i%W;if(rr<H&&cc<W){b[rr][cc]={t:x.slice(1),c:x[0]};if(moved)b[rr][cc].m=1}});return b};
+ const b=empty(H,W);body.split(',').forEach((x,i)=>{
+  if(!x)return;
+  let moved=0,hp=null;
+  if(x.includes(':')){const parts=x.split(':');x=parts[0];hp=+parts[1]}
+  if(x.endsWith('*')){moved=1;x=x.slice(0,-1)}
+  const rr=i/W|0,cc=i%W;
+  if(rr<H&&cc<W){
+   const piece={t:x.slice(1),c:x[0]};
+   if(moved)piece.m=1;
+   if(hp!=null&&!isNaN(hp))piece.hp=hp;
+   else if(P&&P[piece.t]&&P[piece.t].lives)piece.hp=P[piece.t].lives;
+   b[rr][cc]=piece;
+  }
+ });return b};
 
 function rebuildHistory(moves){
  MOVES=[];
@@ -961,7 +1109,7 @@ function rebuildHistory(moves){
     if(B[r]&&B[r][c]==null){
      const hand=CAPT[turn]||[];
      const ix=hand.findIndex(x=>x.t===dropSel);
-     if(ix>=0){hand.splice(ix,1);B[r][c]={t:dropSel,c:turn,m:1};last=[['drop',dropSel],[r,c]];
+     if(ix>=0){hand.splice(ix,1);B[r][c]={t:dropSel,c:turn,m:1,hp:(P[dropSel]&&P[dropSel].lives)?P[dropSel].lives:undefined};last=[['drop',dropSel],[r,c]];
       turn=nextTurn(turn);status();REC.push(snap());cur=REC.length-1;MOVES.push(m)}
     }
     dropSel=null;continue;
@@ -1046,23 +1194,40 @@ function delPosition(id){
 
 /* редактор фигур */
 const fromM=m=>{const g={};(m||[]).forEach(([x,y,n])=>g[x+','+y]=n==1?1:2);return g},toM=g=>Object.entries(g).map(([k,v])=>[...k.split(',').map(Number),v==1?1:0]);
-const edit=id=>{Ehist=[];const d=id?P[id]:{},e=d.ev||{};E={id:id||'c'+Date.now().toString(36),name:d.name||'',sw:d.sw||BL,sb:d.sb||BL,es:'w',col:'0',sy:0,g:fromM(d.m),h:fromM(d.cm),tl:'pen',f:(id&&C[id]&&C[id].f)||(S.pf!='std'?S.pf:'mine'),sep:d.cm?1:0,val:d.val===undefined?1:d.val,jump:d.jump||0,pw:d.pw||0,royal:d.royal||0,ability:d.ability||'none',fixed:d.fixed||0,immortal:d.immortal||0,when:e.when||'',do:e.do||'to',to:e.to||'q'}};
+const edit=id=>{Ehist=[];const d=id?P[id]:{},e=d.ev||{},rg=d.regen||{};E={id:id||'c'+Date.now().toString(36),name:d.name||'',sw:d.sw||BL,sb:d.sb||BL,es:'w',col:'0',sy:0,g:fromM(d.m),h:fromM(d.cm),tl:'pen',f:(id&&C[id]&&C[id].f)||(S.pf!='std'?S.pf:'mine'),sep:d.cm?1:0,val:d.val===undefined?1:d.val,jump:d.jump||0,pw:d.pw||0,royal:d.royal||0,ability:d.ability||'none',fixed:d.fixed||0,immortal:d.immortal||0,lives:d.lives||0,rookish:d.rookish||0,sitEat:d.sitEat||0,regenMode:rg.mode||'none',regenCaps:rg.caps||0,regenMoves:rg.moves||0,regenPts:rg.pts||0,grR:3,when:e.when||'',do:e.do||'to',to:e.to||'q'}};
 const enc64=o=>'cp1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const dec64=t=>{let x=(t||'').replace(/\s+/g,'');const i=x.indexOf('cp1:');if(i>=0)x=x.slice(i+4);x=x.replace(/-/g,'+').replace(/_/g,'/');while(x.length%4)x+='=';return JSON.parse(decodeURIComponent(escape(atob(x))))};
 const folders=()=>[{id:'std',name:'Фигуры по умолчанию'},...S.fl];
 const folderName=id=>(folders().find(x=>x.id==id)||{name:''}).name;
 const inFolder=fid=>fid=='std'?Object.keys(STD):Object.keys(C).filter(k=>!STD[k]&&(C[k].f||'mine')==fid);
 const copyTxt=t=>{try{navigator.clipboard.writeText(t).catch(()=>{})}catch(x){}};
-const pieceOut=k=>{const d=P[k];return{name:d.name,sw:d.sw||BL,sb:d.sb||BL,m:d.m||[],cm:d.cm||0,jump:d.jump||0,pw:d.pw||0,royal:d.royal||0,ability:d.ability||'none',fixed:d.fixed||0,immortal:d.immortal||0,val:d.val===undefined?1:d.val,ev:d.ev||{when:'',do:'to',to:'q'}}};
+const pieceOut=k=>{const d=P[k];return{name:d.name,sw:d.sw||BL,sb:d.sb||BL,m:d.m||[],cm:d.cm||0,jump:d.jump||0,pw:d.pw||0,royal:d.royal||0,ability:d.ability||'none',fixed:d.fixed||0,immortal:d.immortal||0,lives:d.lives||0,rookish:d.rookish||0,sitEat:d.sitEat||0,regen:d.regen||{mode:'none',caps:0,moves:0,pts:0},val:d.val===undefined?1:d.val,ev:d.ev||{when:'',do:'to',to:'q'}}};
 const importItems=(fid,items)=>{let n=0;items.forEach((it,i)=>{const id='c'+Date.now().toString(36)+i;C[id]={...it,f:fid,name:String(it.name||'Фигура').slice(0,20)};if(C[id].ev&&!C[id].ev.to)C[id].ev.to='q';n++});mkP();save();return n};
 const msg=t=>{const m=$('#msg');m?m.textContent=t:alert(t)};
 function sv(){
  const m=toM(E.g);
  if(!m.length){msg('Выбери клетки, куда фигура может пойти.');return}
  if(/^\.*$/.test(E.sw+E.sb)){msg('Нарисуй фигуру.');return}
- C[E.id]={name:E.name.trim()||'Фигура',f:E.f||'mine',sw:E.sw,sb:E.sb,m:E.fixed?[]:m,cm:E.fixed?0:(E.sep?toM(E.h):0),jump:E.fixed?0:(E.jump?1:0),pw:E.fixed?0:(E.pw?1:0),royal:E.royal?1:0,ability:E.fixed?'none':(E.ability||'none'),fixed:E.fixed?1:0,immortal:E.immortal?1:0,val:Math.max(0,+E.val||0),ev:E.fixed?{when:'',do:'to',to:'q'}:{when:E.when,do:E.do,to:E.to}};
+ C[E.id]={name:E.name.trim()||'Фигура',f:E.f||'mine',sw:E.sw,sb:E.sb,m:E.fixed?[]:m,cm:E.fixed?0:(E.sep?toM(E.h):0),jump:E.fixed?0:(E.jump?1:0),pw:E.fixed?0:(E.pw?1:0),royal:E.royal?1:0,ability:E.fixed?'none':(E.ability||'none'),fixed:E.fixed?1:0,immortal:E.immortal?1:0,lives:Math.max(0,Math.min(9,+E.lives||0)),rookish:E.rookish?1:0,sitEat:E.sitEat?1:0,regen:{mode:E.regenMode||'none',caps:+E.regenCaps||0,moves:+E.regenMoves||0,pts:+E.regenPts||0},val:Math.max(0,+E.val||0),ev:E.fixed?{when:'',do:'to',to:'q'}:{when:E.when,do:E.do,to:E.to}};
  mkP();E=null;save();render()}
-function gr(){for(const q of['g','h']){let h='';for(let y=3;y>=-3;y--)for(let x=-3;x<=3;x++){const v=E[q][x+','+y];h+=x||y?`<b class="gc${v?' on':''}" data-a="cell" data-q="${q}" data-x="${x}" data-y="${y}">${v==1?'●':v==2?'∞':''}</b>`:'<b class="gc c">◆</b>'}$(q=='g'?'#gr':'#gh').innerHTML=h}}
+function gr(){
+ const R=Math.max(3,Math.min(16,+(E&&E.grR)||3));
+ if(E)E.grR=R;
+ for(const q of['g','h']){
+  const cells=[];
+  for(let y=R;y>=-R;y--)for(let x=-R;x<=R;x++){
+   if(!x&&!y){cells.push('<b class="gc c">◆</b>');continue}
+   const v=E[q][x+','+y];
+   const cls='gc'+(v?' on':'');
+   const mark=v==1?'●':(v==2?'∞':'');
+   cells.push('<b class="'+cls+'" data-a="cell" data-q="'+q+'" data-x="'+x+'" data-y="'+y+'">'+mark+'</b>');
+  }
+  const el=$(q=='g'?'#gr':'#gh');
+  if(el){el.style.gridTemplateColumns='repeat('+(R*2+1)+',minmax(0,1fr))';el.innerHTML=cells.join('')}
+ }
+ const z=$('#grZoomHint');
+ if(z)z.textContent='Сетка ходов: '+(R*2+1)+'×'+(R*2+1)+' · щипок пальцами: от 7×7 до 33×33';
+}
 const ERA='<svg viewBox="0 0 24 24" width="18" height="18" aria-label="ластик"><path d="M3 15l9-9 7 7-6 6H7z" fill="currentColor"/><path d="M7 19h14" stroke="currentColor" stroke-width="2"/></svg>';
 function pxTool(i){
  const k=E.es=='w'?'sw':'sb',s=E[k];
@@ -1141,9 +1306,9 @@ const form=()=>`<label>Название<input type="text" data-k="name" maxlengt
 <textarea id="spcode" rows="3" style="width:100%;font:12px monospace" placeholder="Здесь появится / вставьте код спрайта"></textarea>
 <div class="row"><button data-a="spex">Экспорт кода</button><button data-a="spin">Импорт кода</button><button data-a="eundo" title="Отменить последнее действие">↩</button></div>
 <p class="hint">Где ходит: ● — на клетку, ∞ — до упора. Вверх — вперёд.</p>
-<div id="gr" class="grid"></div>
+<div id="grwrap"><p class="hint-zoom" id="grZoomHint">Сетка ходов: сведи/разведи пальцы (7×7 … 33×33)</p><div id="gr" class="grid moves"></div></div>
 <label><input type="checkbox" data-k="sep"> Бьёт иначе, чем ходит</label>
-<div id="gh2"><p class="hint">Где бьёт</p><div id="gh" class="grid"></div></div>
+<div id="gh2"><p class="hint">Где бьёт</p><div id="ghwrap"><div id="gh" class="grid moves"></div></div></div>
 <div class="row">${['k','q','r','b','n','p'].map(k=>`<button data-a="pre" data-v="${k}">${STD[k].name}</button>`).join('')}</div>
 <label>Стоимость в очках<input type="number" data-k="val" min="0" max="99" style="width:90px;display:inline-block;margin-left:8px"></label>
 <label>Папка<select data-k="f">${S.fl.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>
@@ -1154,6 +1319,23 @@ const form=()=>`<label>Название<input type="text" data-k="name" maxlengt
 <label>Особая способность<select data-k="ability" style="display:block;width:100%"><option value="none">Нет</option><option value="teleport">Телепортация: на любую доступную клетку</option></select></label>
 <label><input type="checkbox" data-k="pw"> Как пешка: ход на 2 клетки с места, взятие на проходе</label>
 <label><input type="checkbox" data-k="royal"> Королевская: ей ставят шах и мат</label>
+<label><input type="checkbox" data-k="rookish"> Ладейная: с ней рокируются королевские (как с ладьёй)</label>
+<label><input type="checkbox" data-k="sitEat"> Есть с места: при «ходе» на врага он снимается, а ты остаёшься</label>
+<label>Доп. жизни (0 = обычная)<input type="number" data-k="lives" min="0" max="9" style="width:70px;margin-left:8px"></label>
+<p class="hint">При атаке по фигуре с жизнями она теряет 1 жизнь и остаётся, атакующий не встаёт на клетку. Королевская с жизнями может уходить из-под мата / ходить через шах, теряя жизнь.</p>
+<label>Восстановление жизней
+<select data-k="regenMode" style="display:block;width:100%">
+<option value="none">Никак</option>
+<option value="caps">За съедение N фигур</option>
+<option value="moves">За N своих ходов</option>
+<option value="pts">За N очков съеденного материала</option>
+<option value="combo">Комбо: ходы + фигуры/очки (все пороги сразу)</option>
+</select></label>
+<div class="row">
+<label>N фигур <input type="number" data-k="regenCaps" min="0" max="99" style="width:64px"></label>
+<label>N ходов <input type="number" data-k="regenMoves" min="0" max="99" style="width:64px"></label>
+<label>N очков <input type="number" data-k="regenPts" min="0" max="99" style="width:64px"></label>
+</div>
 <label>Событие<select data-k="when"><option value="">Ничего не происходит</option><option value="far">Дошла до дальнего края</option><option value="edge">Дошла до любого края</option><option value="cap">Взяла фигуру</option></select>
 <select data-k="do"><option value="to">Превращается в заданную фигуру</option><option value="pick">Превращается в фигуру на выбор игрока</option><option value="die">Исчезает</option><option value="boom">Взрывается: убирает соседей, кроме королевских</option></select>
 <select data-k="to" id="to">${Object.entries(P).filter(([k])=>k!=E.id).map(([k,d])=>`<option value="${k}">${esc(d.name)}</option>`).join('')}</select></label>
@@ -2615,7 +2797,7 @@ return}
 /* рисование: доска (расстановка) и пиксельный редактор */
 let paint=0,lastSq='',lp=null,pp=0,lp2=null;
 const seg=(l,x,y,f)=>{const n=l?Math.ceil(Math.hypot(x-l[0],y-l[1])/6):1;for(let i=1;i<=n;i++)f(l?l[0]+(x-l[0])*i/n:x,l?l[1]+(y-l[1])*i/n:y);return[x,y]};
-const one=(x,y)=>{const t=document.elementFromPoint(x,y),s=t&&t.closest&&t.closest('.sq');if(!s)return;const k=s.dataset.r+'-'+s.dataset.c;if(k==lastSq)return;lastSq=k;const r=+s.dataset.r,c=+s.dataset.c;start[r][c]=tool?{t:tool,c:side}:null;const i=s.querySelector('.pc');if(i)i.remove();if(start[r][c])s.insertAdjacentHTML('afterbegin',pc(start[r][c]))};
+const one=(x,y)=>{const t=document.elementFromPoint(x,y),s=t&&t.closest&&t.closest('.sq');if(!s)return;const k=s.dataset.r+'-'+s.dataset.c;if(k==lastSq)return;lastSq=k;const r=+s.dataset.r,c=+s.dataset.c;start[r][c]=tool?{t:tool,c:side,hp:(P[tool]&&P[tool].lives)?P[tool].lives:undefined}:null;const i=s.querySelector('.pc');if(i)i.remove();if(start[r][c])s.insertAdjacentHTML('afterbegin',pc(start[r][c]))};
 const setPx=(k,i,ch)=>{E[k]=E[k].slice(0,i)+ch+E[k].slice(i+1);$('#px').children[i].style.background=ch=='.'?'':PAL[parseInt(ch,16)]};
 const pxAt=(x,y)=>{const t=document.elementFromPoint(x,y);if(!t||!t.classList.contains('pxc'))return;const i=+t.dataset.i,k=E.es=='w'?'sw':'sb',X=i%16,Y=i>>4,pts=[[X,Y]];if(E.sy&1)pts.push([15-X,Y]);if(E.sy&2)pts.push(...pts.map(([a,b])=>[a,15-b]));pts.forEach(([a,b])=>setPx(k,b*16+a,E.col))};
 $('#bd').addEventListener('pointerdown',e=>{if(tab!='setup')return;if(tool==='portal'||tool==='crystal')return;pushSH();paint=1;lastSq='';lp=seg(null,e.clientX,e.clientY,one);e.preventDefault()});
@@ -2643,6 +2825,28 @@ mkP();start=std();newG();
 if(location.hash.startsWith('#g='))unpackAny(location.hash.slice(3)).then(()=>render()).catch(()=>{});
 document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='chatin'){e.preventDefault();sendChat()}if(e.key=='Enter'&&e.target.id=='netchatin'){e.preventDefault();syncNetName();netChatSend(e.target.value);e.target.value=''}});
 theme();render();
+
+/* pinch zoom for move grid */
+let grPinch=null;
+function onGrPinch(e){
+ if(!E||tab!=='pieces')return;
+ if(e.touches&&e.touches.length===2){
+  e.preventDefault();
+  const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;
+  const dist=Math.hypot(dx,dy);
+  if(!grPinch){grPinch={dist,r:E.grR||3};return}
+  const ratio=dist/grPinch.dist;
+  let nr=Math.round(grPinch.r*ratio);
+  nr=Math.max(3,Math.min(16,nr));
+  if(nr!==E.grR){E.grR=nr;gr()}
+ }
+}
+function endGrPinch(){grPinch=null}
+document.addEventListener('touchstart',onGrPinch,{passive:false});
+document.addEventListener('touchmove',onGrPinch,{passive:false});
+document.addEventListener('touchend',endGrPinch);
+document.addEventListener('touchcancel',endGrPinch);
+
 </script>
 </body>
 </html>
