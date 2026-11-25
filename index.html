@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.9</title>
+<title>MetaChess v2.10</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -109,10 +109,45 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
 .pal{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px}
 .pal .pc,.li .pc{width:44px;height:44px}
 .li{display:flex;align-items:center;gap:8px;margin:8px 0}.li span{flex:1;margin-left:4px}
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:min(100%,360px);margin:10px auto}
-.gc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:6px;font-weight:800;cursor:pointer}
-.gc.on{background:var(--acc);border-color:var(--acc);color:#fff}
-.gc.c{background:var(--d);cursor:default}
+.grid{display:grid;grid-template-columns:repeat(7,22px);grid-auto-rows:22px;gap:2px;width:max-content;margin:10px auto;justify-content:center}
+.grid.moves{
+ display:grid!important;
+ gap:2px!important;
+ width:max-content!important;
+ max-width:none!important;
+ margin:8px auto!important;
+ justify-content:start!important;
+ align-content:start!important;
+ flex:none!important;
+}
+.grid.moves .gc, #gr .gc, #gh .gc{
+ width:var(--gc,22px)!important;
+ height:var(--gc,22px)!important;
+ min-width:var(--gc,22px)!important;
+ min-height:var(--gc,22px)!important;
+ max-width:var(--gc,22px)!important;
+ max-height:var(--gc,22px)!important;
+ box-sizing:border-box!important;
+ display:flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:3px!important;
+ font-weight:800;
+ cursor:pointer;
+ font-size:10px!important;
+ line-height:1!important;
+ padding:0!important;
+ margin:0!important;
+ flex:none!important;
+ aspect-ratio:1/1!important;
+ overflow:hidden!important;
+}
+.gc{width:22px;height:22px;min-width:22px;min-height:22px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:5px;font-weight:800;cursor:pointer;font-size:11px;padding:0;line-height:1}
+#grwrap,#ghwrap{overflow:auto;-webkit-overflow-scrolling:touch;max-width:100%;width:100%}
+.gc.on{background:var(--acc)!important;border-color:var(--acc)!important;color:#fff!important}
+.gc.c{background:var(--d)!important;cursor:default}
 .px{grid-template-columns:repeat(16,1fr);gap:0;width:min(100%,336px);touch-action:none;user-select:none;-webkit-user-select:none;background:var(--l);border:1px solid var(--line)}
 .pxc{aspect-ratio:1;box-shadow:inset 0 0 0 .5px rgba(128,128,128,.3)}
 .sw{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer;background:var(--card)}
@@ -235,6 +270,12 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 #grwrap,#ghwrap{touch-action:none;overflow:auto;max-width:100%;padding:6px;border:1px dashed var(--line);border-radius:10px;margin:6px 0;background:rgba(12,18,36,.35)}
 #grwrap .hint-zoom,#ghwrap .hint-zoom{font-size:12px;opacity:.8;margin:0 0 6px;line-height:1.3}
 
+
+.nv button{display:inline-flex;align-items:center;justify-content:center;min-width:40px}
+.nv button svg{display:block}
+
+.ico-btn{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:40px;padding:8px 12px;line-height:0}
+.ico-btn svg{display:block;width:22px;height:22px;flex-shrink:0}
 </style>
 <script>
 /* PeerJS 1.5.4 inlined — works from content:// and file:// */
@@ -252,7 +293,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <main>
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.9</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.10</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bd"></div><div id="capB" class="cap"></div>
 <div id="an"></div>
@@ -1213,20 +1254,37 @@ function sv(){
 function gr(){
  const R=Math.max(3,Math.min(16,+(E&&E.grR)||3));
  if(E)E.grR=R;
+ const n=R*2+1;
+ /* фиксированный размер клетки — не растягиваем */
+ const cell=n<=9?26:n<=15?18:n<=21?14:11;
  for(const q of['g','h']){
   const cells=[];
   for(let y=R;y>=-R;y--)for(let x=-R;x<=R;x++){
-   if(!x&&!y){cells.push('<b class="gc c">◆</b>');continue}
+   if(!x&&!y){cells.push('<b class="gc c" style="width:'+cell+'px;height:'+cell+'px;font-size:'+Math.max(8,cell-10)+'px">◆</b>');continue}
    const v=E[q][x+','+y];
    const cls='gc'+(v?' on':'');
    const mark=v==1?'●':(v==2?'∞':'');
-   cells.push('<b class="'+cls+'" data-a="cell" data-q="'+q+'" data-x="'+x+'" data-y="'+y+'">'+mark+'</b>');
+   cells.push('<b class="'+cls+'" style="width:'+cell+'px;height:'+cell+'px;font-size:'+Math.max(8,cell-10)+'px" data-a="cell" data-q="'+q+'" data-x="'+x+'" data-y="'+y+'">'+mark+'</b>');
   }
   const el=$(q=='g'?'#gr':'#gh');
-  if(el){el.style.gridTemplateColumns='repeat('+(R*2+1)+',minmax(0,1fr))';el.innerHTML=cells.join('')}
+  if(el){
+   el.style.setProperty('--gc', cell+'px');
+   el.style.display='grid';
+   el.style.gridTemplateColumns='repeat('+n+','+cell+'px)';
+   el.style.gridTemplateRows='repeat('+n+','+cell+'px)';
+   el.style.gridAutoRows=cell+'px';
+   el.style.gridAutoColumns=cell+'px';
+   el.style.gap='2px';
+   el.style.width=(n*cell+(n-1)*2)+'px';
+   el.style.height=(n*cell+(n-1)*2)+'px';
+   el.style.maxWidth='none';
+   el.style.minWidth=(n*cell+(n-1)*2)+'px';
+   el.style.boxSizing='content-box';
+   el.innerHTML=cells.join('');
+  }
  }
  const z=$('#grZoomHint');
- if(z)z.textContent='Сетка ходов: '+(R*2+1)+'×'+(R*2+1)+' · щипок пальцами: от 7×7 до 33×33';
+ if(z)z.textContent='Сетка: '+n+'×'+n+' · щипок: 7×7…33×33 · кнопки ± рядом';
 }
 const ERA='<svg viewBox="0 0 24 24" width="18" height="18" aria-label="ластик"><path d="M3 15l9-9 7 7-6 6H7z" fill="currentColor"/><path d="M7 19h14" stroke="currentColor" stroke-width="2"/></svg>';
 function pxTool(i){
@@ -1266,36 +1324,37 @@ function makeAISprite(motif){
  const white=g.join(''),black=[...white].map(c=>c=='2'?'5':c=='3'?'6':c=='1'?'4':c).join('');
  return{sw:white,sb:black};
 }
-async function generateAIPiece(){
- const btn=document.querySelector('[data-a="genpiece"]'),status=$('#pieceGenStatus'),prompt=($('#piecePrompt')?.value||'').trim();
- if(!E||!prompt){if(status)status.textContent='Сначала опиши фигуру.';return}
- if(!S.ai.url||!S.ai.model){if(status)status.textContent='Сначала укажи адрес API и модель в настройках нейросети.';return}
- if(btn)btn.disabled=true;if(status)status.textContent='Нейросеть придумывает правила и пиксельный рисунок…';
- try{
-  const sys=`Ты генератор новых фигур для шахматной игры. Верни только JSON без markdown: {"name":"до 20 символов","description":"коротко","moves":[[dx,dy,range]],"captureMoves":null или массив таких же ходов,"ability":"none|jump|teleport|explode|promotion|royal","value":0..15,"motif":"stripes|spots|flame|crystal|crown|robot|wing|plain"}. dx,dy целые от -3 до 3, не оба ноль. range=1 означает ход на одну клетку; range=0 означает ход по лучу до препятствия. dy положительный означает вперёд. Не выдавай программный код. Способности: jump — проходить через фигуры; teleport — особое перемещение; explode — при взятии взрыв вокруг; promotion — превращение на дальнем краю; royal — королевская фигура. Выбирай только одну поддерживаемую способность. Не придумывай несуществующие способности. Для обычной фигуры предложи 1–8 осмысленных ходов.`;
-  const txt=await aiPost([{role:'system',content:sys},{role:'user',content:prompt}],{timeout:S.ai.timeout||60000,jsonMode:true});
-  if(!txt)throw new Error(AI_LAST_ERROR||'Нейросеть не вернула ответ');
-  const d=parseJ(txt);if(!d||!Array.isArray(d.moves))throw new Error('Ответ пришёл, но правила фигуры не распознаны. Нажми генерацию ещё раз.');
-  const normalize=list=>(Array.isArray(list)?list:[]).slice(0,30).map(m=>{if(!Array.isArray(m)||m.length<2)return null;let dx=Math.max(-3,Math.min(3,Math.trunc(+m[0]))),dy=Math.max(-3,Math.min(3,Math.trunc(+m[1])));if(!Number.isFinite(dx)||!Number.isFinite(dy)||(!dx&&!dy))return null;return[dx,dy,+m[2]===0?0:1]}).filter(Boolean);
-  const moves=normalize(d.moves);if(!moves.length)throw new Error('Нейросеть не предложила допустимые перемещения.');
-  const caps=normalize(d.captureMoves);
-  E.name=String(d.name||'Новая фигура').replace(/[<>]/g,'').slice(0,20)||'Новая фигура';
-  E.g=fromM(moves);E.h=fromM(caps);E.sep=caps.length?1:0;
-  E.jump=d.ability==='jump'?1:0;E.ability=d.ability==='teleport'?'teleport':'none';
-  E.royal=d.ability==='royal'?1:0;E.pw=0;
-  if(d.ability==='explode'){E.when='cap';E.do='boom'}
-  else if(d.ability==='promotion'){E.when='far';E.do='pick'}
-  else{E.when='';E.do='to'}
-  E.val=Math.max(0,Math.min(15,Math.round(+d.value||1)));
-  const art=makeAISprite(['stripes','spots','flame','crystal','crown','robot','wing'].includes(d.motif)?d.motif:'plain');
-  E.sw=art.sw;E.sb=art.sb;E.es='w';E.col='0';E.sy=0;E.tl='pen';
-  fill();if(status)status.textContent='Фигура создана! Проверь ходы и способность, затем нажми «Сохранить». '+String(d.description||'').slice(0,180);
- }catch(err){if(status)status.textContent='Не удалось создать фигуру: '+String(err.message||err).slice(0,240)}
- finally{if(btn)btn.disabled=false}
+async function estimatePieceValue(){
+ const st=$('#aiValStatus');
+ if(!S.ai.url||!S.ai.model){if(st)st.textContent='Сначала настрой API в настройках';return}
+ if(!E)return;
+ const moves=Object.entries(E.g||{}).filter(([,v])=>v).map(([k,v])=>{const[x,y]=k.split(',');return '('+x+','+y+')'+(v==2?' луч':'')});
+ const caps=E.sep?Object.entries(E.h||{}).filter(([,v])=>v).map(([k,v])=>{const[x,y]=k.split(',');return '('+x+','+y+')'+(v==2?' луч':'')}):[];
+ const flags=[];
+ if(E.jump)flags.push('прыжок');
+ if(E.pw)flags.push('как пешка');
+ if(E.royal)flags.push('королевская');
+ if(E.rookish)flags.push('ладейная');
+ if(E.sitEat)flags.push('есть с места');
+ if(E.fixed)flags.push('неподвижная');
+ if(E.immortal)flags.push('бессмертная');
+ if(+E.lives>0)flags.push('жизней '+E.lives);
+ if(E.ability&&E.ability!=='none')flags.push(E.ability);
+ const sys='Ты оцениваешь ценность шахматной фигуры в очках, как у пешки=1, коня/слона=3, ладьи=5, ферзя=9, короля=0. Ответь ТОЛЬКО JSON: {"value":число от 0 до 30,"reason":"кратко по-русски"}.';
+ const user='Фигура «'+(E.name||'без имени')+'». Ходы: '+(moves.join(', ')||'нет')+'. '+(caps.length?'Отдельные взятия: '+caps.join(', ')+'. ':'')+'Свойства: '+(flags.join(', ')||'обычные')+'. Текущая оценка пользователя: '+(E.val??'?')+'.';
+ if(st)st.textContent='Оцениваю…';
+ const t=await aiAsk(user,{system:sys,jsonMode:true,temperature:0.2,timeout:45000});
+ if(t==null){if(st)st.textContent='Ошибка: '+(AI_LAST_ERROR||'нет ответа');return}
+ let j=null;try{j=JSON.parse(t.match(/\{[\s\S]*\}/)?.[0]||t)}catch(e){}
+ if(!j||j.value==null){if(st)st.textContent='Не удалось разобрать ответ';return}
+ const val=Math.max(0,Math.min(99,Math.round(+j.value)||0));
+ E.val=val;
+ const inp=document.querySelector('#ui [data-k="val"]');if(inp)inp.value=val;
+ if(st)st.textContent='ИИ: '+val+(j.reason?' — '+String(j.reason).slice(0,120):'');
 }
 
+
 const form=()=>`<label>Название<input type="text" data-k="name" maxlength="20" style="display:block;width:100%"></label>
-<section style="border:1px solid var(--line);border-radius:12px;padding:10px;margin:10px 0"><b>Создать фигуру с нейросетью</b><p class="hint">Опиши фигуру и её способности. ИИ заполнит рисунок и правила, а ты сможешь всё поправить перед сохранением.</p><textarea id="piecePrompt" rows="3" style="width:100%" placeholder="Например: зебра, скачет как конь и может взорвать соседние фигуры при взятии"></textarea><div class="row"><button data-a="genpiece" class="on">✦ Сгенерировать фигуру</button></div><p id="pieceGenStatus" class="hint" aria-live="polite"></p></section>
 <p class="hint">Рисунок 16×16. Белая и чёрная фигура рисуются отдельно.</p>
 <div class="row"><button data-a="es" data-v="w">Белая</button><button data-a="es" data-v="b">Чёрная</button><button data-a="cp">Копия для другой стороны</button><button data-a="clx">Очистить</button></div>
 <div class="row"><button data-a="sy" data-v="1">Симметрия ↔</button><button data-a="sy" data-v="2">Симметрия ↕</button></div>
@@ -1306,11 +1365,15 @@ const form=()=>`<label>Название<input type="text" data-k="name" maxlengt
 <textarea id="spcode" rows="3" style="width:100%;font:12px monospace" placeholder="Здесь появится / вставьте код спрайта"></textarea>
 <div class="row"><button data-a="spex">Экспорт кода</button><button data-a="spin">Импорт кода</button><button data-a="eundo" title="Отменить последнее действие">↩</button></div>
 <p class="hint">Где ходит: ● — на клетку, ∞ — до упора. Вверх — вперёд.</p>
-<div id="grwrap"><p class="hint-zoom" id="grZoomHint">Сетка ходов: сведи/разведи пальцы (7×7 … 33×33)</p><div id="gr" class="grid moves"></div></div>
+<div id="grwrap"><p class="hint-zoom" id="grZoomHint">Сетка ходов</p>
+<div class="row" style="margin:4px 0"><button type="button" data-a="grzoom" data-v="-1" title="Меньше клеток">− меньше</button><button type="button" data-a="grzoom" data-v="1" title="Больше клеток">+ больше</button><button type="button" data-a="grzoom" data-v="0">7×7</button></div>
+<div id="gr" class="grid moves"></div></div>
 <label><input type="checkbox" data-k="sep"> Бьёт иначе, чем ходит</label>
 <div id="gh2"><p class="hint">Где бьёт</p><div id="ghwrap"><div id="gh" class="grid moves"></div></div></div>
 <div class="row">${['k','q','r','b','n','p'].map(k=>`<button data-a="pre" data-v="${k}">${STD[k].name}</button>`).join('')}</div>
 <label>Стоимость в очках<input type="number" data-k="val" min="0" max="99" style="width:90px;display:inline-block;margin-left:8px"></label>
+<div class="row"><button type="button" data-a="aival" class="on">ИИ: оценить ценность</button><span id="aiValStatus" class="hint"></span></div>
+<p class="hint">Нейросеть предложит очки по ходам и способностям — можно править вручную.</p>
 <label>Папка<select data-k="f">${S.fl.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label>
 <label><input type="checkbox" data-k="fixed"> Неподвижная: нельзя ходить (стена / препятствие)</label>
 <label><input type="checkbox" data-k="immortal"> Бессмертная: нельзя атаковать и пройти сквозь неё</label>
@@ -1348,7 +1411,9 @@ const ctlName=c=>CN[c];
 const modeName=()=>{const k=PRESETS.find(([n,c])=>c.w==S.ctl.w&&c.b==S.ctl.b);return k?k[0]:'Свой'};
 const soundRow=()=>`<div class="row" style="flex-wrap:wrap">${[['m','Ход'],['c','Взятие'],['k','Шах'],['e','Конец']].map(([k,l])=>`<label style="display:flex;align-items:center;gap:6px;margin:0">${l}<select data-sv="${k}" style="width:auto">${Object.keys(SETS).map(x=>`<option value="${x}" ${S.sv[k]==x?'selected':''}>${SN[x]}</option>`).join('')}</select></label>`).join('')}</div>`;
 const UIC=[['Синий','#2f5d8a'],['Зелёный','#2e7d5b'],['Фиолетовый','#6a3fd4'],['Оранжевый','#c8642a'],['Красный','#b03a3a']];
-const NAV=()=>`<div class="row nv"><button data-a="nav" data-v="first" title="В начало">⏮</button><button data-a="nav" data-v="prev" title="Назад">◀</button><button data-a="pause" class="${S.paused?'on':''}" ${playersList().some(c=>(S.ctl[c]||'h')!='h')?'':'disabled'} title="Пауза ботов">${S.paused?'⏵':'⏸'}</button><button data-a="nav" data-v="next" title="Вперёд">▶</button><button data-a="nav" data-v="last" title="В конец">⏭</button><button data-a="undo" title="Отменить ход">↶</button></div>
+const ICO_PLAY='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M7 4.8v14.4c0 .9 1 1.4 1.7.9l11.2-7.2c.7-.4.7-1.4 0-1.8L8.7 3.9C8 3.4 7 3.9 7 4.8z"/></svg>';
+const ICO_PAUSE='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5.5" y="4" width="4.8" height="16" rx="1.4" fill="currentColor"/><rect x="13.7" y="4" width="4.8" height="16" rx="1.4" fill="currentColor"/></svg>';
+const NAV=()=>`<div class="row nv"><button data-a="nav" data-v="first" title="В начало">⏮</button><button data-a="nav" data-v="prev" title="Назад">◀</button><button data-a="pause" class="ico-btn ${S.paused?'on':''}" ${playersList().some(c=>(S.ctl[c]||'h')!='h')?'':'disabled'} title="${S.paused?'Продолжить ботов/нейросеть':'Пауза ботов/нейросети'}">${S.paused?ICO_PLAY:ICO_PAUSE}</button><button data-a="nav" data-v="next" title="Вперёд">▶</button><button data-a="nav" data-v="last" title="В конец">⏭</button><button data-a="undo" title="Отменить ход">↶</button></div>
 <p class="hint">${cur!=REC.length-1?"Просмотр хода "+cur+". Нажми ⏭, чтобы вернуться к партии.":""}</p>\n<p class="hint">Ссылка на партию (все правила, фигуры, туман, размер доски):</p>
 <textarea id="cd" rows="2" style="width:100%"></textarea>
 <div class="row"><button data-a="cget">Получить ссылку</button><button data-a="cset">Загрузить из поля</button><button data-a="tgs">Отправить в Telegram</button></div>`;
@@ -1564,7 +1629,7 @@ const AI_DEF={
  strict:1,
  timeout:60000,
  preset:'zveno',
- proxy:'',
+ proxy:'https://corsproxy.io/?',
  vision:0,
  hybrid:1
 };
@@ -1601,25 +1666,35 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
  const endpoint=aiEndpoint();
  if(!endpoint){AI_LAST_ERROR='Не указан адрес API';return null}
  if(!S.ai.model){AI_LAST_ERROR='Не указана модель';return null}
+ /* с GitHub Pages / чужого origin CORS к Zveno почти всегда нужен прокси */
+ if(!S.ai.proxy&&/zveno\.ai/i.test(endpoint)&&!/^https?:\/\/(localhost|127\.0\.0\.1)/i.test(location.origin||'')){
+  S.ai.proxy='https://corsproxy.io/?';
+ }
  const once=async(rf)=>{
   const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),timeout);
   try{
    const h={'Content-Type':'application/json','Accept':'application/json'};
    if(S.ai.key)h.Authorization='Bearer '+String(S.ai.key).trim();
-   /* OpenRouter просит эти заголовки */
-   if(/openrouter\.ai/i.test(endpoint)){
-    h['HTTP-Referer']=location.origin||'https://localhost';
-    h['X-Title']='Custom Chess';
+   if(/openrouter\.ai|zveno\.ai/i.test(endpoint)){
+    h['HTTP-Referer']=location.origin||'https://devscet.github.io';
+    h['X-Title']='MetaChess';
    }
    const body={model:String(S.ai.model).trim(),messages,temperature:o.temperature!=null?o.temperature:0.35};
-   if(rf){
-    body.response_format={type:'json_object'};
-    /* некоторые модели Zveno/Anthropic лучше с явной просьбой в system */
-   }
+   /* response_format ломает часть моделей Zveno — только если явно нужно */
+   if(rf&&!/zveno\.ai/i.test(endpoint))body.response_format={type:'json_object'};
    let fetchUrl=endpoint;
    if(S.ai.proxy&&String(S.ai.proxy).trim()){
-    const px=String(S.ai.proxy).trim().replace(/\/$/,'');
-    fetchUrl=px+(px.includes('?')?'&':'?')+'url='+encodeURIComponent(endpoint);
+    let px=String(S.ai.proxy).trim();
+    /* corsproxy.io/?https://...  или  ?url= */
+    if(/corsproxy\.io\/?$/i.test(px)||/corsproxy\.io\?$/i.test(px)){
+     fetchUrl='https://corsproxy.io/?'+encodeURIComponent(endpoint);
+    }else if(px.includes('allorigins')){
+     fetchUrl=px.replace(/\/$/,'')+'/raw?url='+encodeURIComponent(endpoint);
+    }else if(px.endsWith('?')||px.includes('?url=')){
+     fetchUrl=px+(px.endsWith('=')||px.endsWith('?')?'':'&url=')+encodeURIComponent(endpoint);
+    }else{
+     fetchUrl=px.replace(/\/$/,'')+'/?url='+encodeURIComponent(endpoint);
+    }
    }
    const r=await fetch(fetchUrl,{method:'POST',headers:h,body:JSON.stringify(body),signal:ac.signal,mode:'cors'});
    if(!r.ok){
@@ -1660,6 +1735,28 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
  }
  const retryable=r.err==='network'||r.err==='timeout'||(r.bad&&(r.bad>=500||r.bad===429));
  if(retryable){await new Promise(resolve=>setTimeout(resolve,800));r=await once(jsonMode&&!(r.bad&&r.bad<500));}
+ /* CORS / прокси: несколько вариантов для Zveno с github.io */
+ if(!r.t&&/zveno\.ai|openrouter\.ai/i.test(endpoint)){
+  const tried=[String(S.ai.proxy||'')];
+  const list=['https://corsproxy.io/?','https://corsproxy.org/?'];
+  for(const px of list){
+   if(tried.includes(px))continue;
+   tried.push(px);
+   const saved=S.ai.proxy;
+   S.ai.proxy=px;
+   AI_LAST_ERROR='Пробую прокси '+px+'…';
+   r=await once(false);
+   if(r.t){
+    try{save()}catch(e){}
+    AI_LAST_ERROR='';
+    break;
+   }
+   S.ai.proxy=saved;
+  }
+  if(!r.t){
+   AI_LAST_ERROR=(AI_LAST_ERROR||'Нет ответа')+' | Проверь: 1) API-ключ Zveno 2) модель openai/gpt-4o-mini 3) кнопку «Поставить corsproxy.io» 4) VPN иногда ломает прокси';
+  }
+ }
  if(r.t)AI_LAST_ERROR='';
  return r.t||null;
 }
@@ -1782,6 +1879,7 @@ async function aiAsk(userText,o={}){
  msgs.push({role:'system',content:S.ai.persona||'Ты сильный шахматный движок. Играй осторожно, не отдавай фигуры бесплатно.'});
  msgs.push({role:'system',content:buildAiContext()});
  if(o.system)msgs.push({role:'system',content:o.system});
+ if(o.jsonMode)msgs.push({role:'system',content:'Ответь только валидным JSON-объектом, без markdown и без текста вокруг.'});
  msgs.push(...CHAT.hist.slice(-6));
  if(S.ai.vision){
   const img=boardImageDataUrl();
@@ -1914,7 +2012,7 @@ ${S.avAI?`<button type="button" data-a="avclear" data-v="ai">Сбросить</b
 </div>`;
 }
 
-async function aiTest(){const el=$('#aistat');if(el)el.textContent='Проверяю '+aiEndpoint()+' …';const r=await aiPost([{role:'user',content:'Ответь одним словом: ок'}],{timeout:S.ai.timeout||60000,jsonMode:false});const e2=$('#aistat');if(e2)e2.textContent=r==null?('Нет связи: '+(AI_LAST_ERROR||'ошибка')):('Связь есть: '+r.trim().slice(0,80))}
+async function aiTest(){const el=$('#aistat');const ep=aiEndpoint();if(el)el.textContent='Проверяю '+ep+(S.ai.proxy?' через прокси…':' …');const r=await aiPost([{role:'user',content:'Ответь одним словом: ок'}],{timeout:S.ai.timeout||60000,jsonMode:false});const e2=$('#aistat');if(e2)e2.textContent=r==null?('Нет связи: '+(AI_LAST_ERROR||'ошибка')):('Связь есть: '+r.trim().slice(0,80)+(S.ai.proxy?' (прокси включён)':''))}
 const aiSettings=()=>{
  const preset=S.ai.preset||'zveno';
  const opts=Object.entries(AI_PRESETS).map(([id,p])=>`<option value="${id}" ${preset===id?'selected':''}>${esc(p.name)}</option>`).join('');
@@ -1929,8 +2027,9 @@ const aiSettings=()=>{
 <label>Модель<input type="text" data-ai="model" value="${esc(S.ai.model)}" placeholder="openai/gpt-4o-mini" style="display:block;width:100%"></label>
 <label>API-ключ<input id="aikey" type="password" data-ai="key" value="${esc(S.ai.key)}" autocomplete="off" style="display:block;width:100%" placeholder="Bearer-ключ из кабинета провайдера"></label>
 <button data-a="aishowkey">Показать / скрыть ключ</button>
-<label>CORS-прокси <small class="hint">(если браузер блокирует запрос — опционально)</small>
+<label>CORS-прокси <small class="hint">нужен, если с GitHub Pages/телефона API режет CORS</small>
 <input type="url" data-ai="proxy" value="${esc(S.ai.proxy||'')}" placeholder="https://corsproxy.io/?" style="display:block;width:100%"></label>
+<div class="row"><button type="button" data-a="aiproxy" data-v="https://corsproxy.io/?">Поставить corsproxy.io</button><button type="button" data-a="aiproxy" data-v="">Без прокси</button></div>
 <label>Таймаут<select data-ai="timeout" style="display:block;width:100%">
 <option value="20000" ${+S.ai.timeout==20000?'selected':''}>20 с</option>
 <option value="40000" ${+S.ai.timeout==40000?'selected':''}>40 с</option>
@@ -1953,7 +2052,7 @@ const aiSettings=()=>{
 <div class="row"><button data-a="aitest" class="on">Проверить подключение</button></div>
 <p id="aistat" class="hint">Проверка шлёт короткий запрос. Итоговый URL: <code style="word-break:break-all">${esc(aiEndpoint()||'—')}</code></p>
 <p class="hint"><b>Zveno:</b> зарегистрируйся на zveno.ai → API keys → вставь ключ. Модель например <code>openai/gpt-4o-mini</code>. URL: <code>https://api.zveno.ai/v1</code>.<br>
-401 — неверный ключ; CORS/сеть — включи прокси или открой файл через локальный http-сервер; 429 — лимит.</p>`;
+401 — неверный ключ. CORS с браузера часто блокирует api.zveno.ai — нажми «Поставить corsproxy.io» и снова «Проверить». URL: <code>https://api.zveno.ai/v1</code>, модель: <code>openai/gpt-4o-mini</code>. 429 — лимит.</p>`;
 };
 let bbusy=0;
 /* ===== Онлайн: комната, места, 2–4 игрока, чат (PeerJS) ===== */
@@ -2647,10 +2746,12 @@ document.addEventListener('click',e=>{
  else if(a=='analyze'){runAnalysis();return}
  else if(a=='send'){sendChat();return}
  else if(a=='avclear'){if(v==='me'){S.avMe=null;S.avMeEmoji=null}else{S.avAI=null;S.avAIEmoji=null}save();render();return}
- else if(a=='genpiece'){generateAIPiece();return}
+ else if(a=='grzoom'){if(!E)return;if(v==='0')E.grR=3;else E.grR=Math.max(3,Math.min(16,(+E.grR||3)+(+v)));gr();return}
+ else if(a=='aival'){estimatePieceValue();return}
  else if(a=='aitest'){aiTest();return}
  else if(a=='aipreset'){const q=$('#aipreset')?.value||'zveno';const p=AI_PRESETS[q]||AI_PRESETS.custom;S.ai.preset=q;S.ai.url=p.url;S.ai.model=p.model;save();render();return}
  else if(a=='aireset'){if(confirm('Сбросить настройки нейросети (включая ключ)?')){S.ai={...AI_DEF};save();render()}return}
+ else if(a=='aiproxy'){S.ai.proxy=v||'';save();render();return}
  else if(a=='aishowkey'){const k=$('#aikey');if(k)k.type=k.type=='password'?'text':'password';return}
  else if(a=='ancancel'){cancelAnalysis();return}
  else if(a=='anclose'){closeAnalysis();return}
@@ -2836,9 +2937,10 @@ function onGrPinch(e){
   const dist=Math.hypot(dx,dy);
   if(!grPinch){grPinch={dist,r:E.grR||3};return}
   const ratio=dist/grPinch.dist;
+  /* сдвиг пальцев (ближе) → меньше сетка; раздвиг → больше */
   let nr=Math.round(grPinch.r*ratio);
   nr=Math.max(3,Math.min(16,nr));
-  if(nr!==E.grR){E.grR=nr;gr()}
+  if(Math.abs(nr-(+E.grR||3))>=1){E.grR=nr;gr()}
  }
 }
 function endGrPinch(){grPinch=null}
