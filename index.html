@@ -4,13 +4,13 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.18</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&family=Manrope:wght@500;800&display=swap">
+<title>MetaChess v2.19</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme=light]{color-scheme:light;--bg:#e8eef8;--fg:#0f172a;--card:rgba(255,255,255,.9);--l:#c7d2fe;--d:#64748b;--sel:#0ea5e9;--go:#059669;--acc:#4f46e5;--acc2:#7c3aed;--line:rgba(79,70,229,.2);--glow:rgba(79,70,229,.25)}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 96px)}
-body{margin:0;color:var(--fg);font:500 16px/1.45 "DM Sans",system-ui,sans-serif;
+body{margin:0;color:var(--fg);font:500 16px/1.45 "Space Grotesk",system-ui,sans-serif;
  background:
   radial-gradient(ellipse 120% 80% at 10% -10%, rgba(99,102,241,.35) 0%, transparent 50%),
   radial-gradient(ellipse 90% 60% at 100% 0%, rgba(167,139,250,.22) 0%, transparent 45%),
@@ -118,15 +118,21 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
  box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 24px rgba(139,92,246,.12),0 0 0 1px rgba(148,163,255,.2)}
 #bd::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
  background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(0,0,0,.22) 100%);border-radius:inherit}
-.sq em{font-weight:600!important;font-size:9px!important;letter-spacing:.02em;
- color:color-mix(in srgb,var(--acc) 55%,#fff)!important;
- text-shadow:0 0 4px color-mix(in srgb,var(--acc) 40%,transparent),0 1px 2px rgba(0,0,0,.75)!important;
- opacity:.9}
-.pc img{filter:drop-shadow(0 2px 3px rgba(0,0,0,.55));transition:filter .15s,transform .15s}
-.pc.w img,.pc.y img{filter:drop-shadow(0 0 2.5px rgba(167,139,250,.45)) drop-shadow(0 2px 4px rgba(0,0,0,.5))}
-.pc.b img,.pc.g img,.pc.r img{filter:drop-shadow(0 0 2.5px rgba(96,165,250,.35)) drop-shadow(0 2px 4px rgba(0,0,0,.75))}
-.sel .pc img{filter:drop-shadow(0 0 6px rgba(125,211,252,.7)) drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:piecePulse 1.4s ease-in-out infinite}
-@keyframes piecePulse{0%,100%{filter:drop-shadow(0 0 4px rgba(125,211,252,.5)) drop-shadow(0 2px 4px rgba(0,0,0,.5))}50%{filter:drop-shadow(0 0 9px rgba(167,139,250,.85)) drop-shadow(0 2px 4px rgba(0,0,0,.5))}}
+.sq em{font-weight:800!important;font-size:10px!important;letter-spacing:.04em;
+ color:#f0f4ff!important;
+ text-shadow:
+  0 0 2px rgba(0,0,0,.95),
+  0 1px 3px rgba(0,0,0,.9),
+  0 0 6px color-mix(in srgb,var(--acc) 70%,transparent),
+  0 0 1px #000!important;
+ opacity:1;-webkit-text-stroke:.2px rgba(0,0,0,.4)}
+.pc img{transition:filter .15s,transform .15s;image-rendering:pixelated}
+.pc.w img,.pc.y img{filter:sepia(.25) hue-rotate(220deg) saturate(1.35) brightness(1.12) drop-shadow(0 0 4px rgba(167,139,250,.75)) drop-shadow(0 2px 5px rgba(0,0,0,.55))}
+.pc.b img{filter:sepia(.35) hue-rotate(230deg) saturate(1.4) brightness(.72) drop-shadow(0 0 4px rgba(139,92,246,.65)) drop-shadow(0 2px 5px rgba(0,0,0,.8))}
+.pc.g img{filter:sepia(.3) hue-rotate(160deg) saturate(1.3) brightness(.75) drop-shadow(0 0 4px rgba(52,211,153,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.8))}
+.pc.r img{filter:sepia(.35) hue-rotate(320deg) saturate(1.4) brightness(.75) drop-shadow(0 0 4px rgba(244,63,94,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.8))}
+.sel .pc img{animation:piecePulse 1.4s ease-in-out infinite}
+@keyframes piecePulse{0%,100%{filter:drop-shadow(0 0 6px rgba(167,139,250,.7)) drop-shadow(0 2px 5px rgba(0,0,0,.5))}50%{filter:drop-shadow(0 0 12px rgba(196,181,253,.95)) drop-shadow(0 2px 5px rgba(0,0,0,.5))}}
 #netdock .net-x{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
  border-radius:8px;background:rgba(0,0,0,.28);font-size:14px;font-weight:700;line-height:1;
  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);flex-shrink:0}
@@ -331,12 +337,12 @@ input[type=text],select,textarea{font:inherit;padding:8px;border-radius:8px;bord
 label{display:block;margin:10px 0}
 select{width:100%;margin:4px 0}
 .hint,small{opacity:.75;font-size:13px}
-.capstrip{min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;
+.cap{min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;
 margin:6px 0;background:var(--card);border:2px solid #3dcf8e;border-radius:10px;
 box-shadow:inset 0 0 0 1px rgba(61,207,142,.25)}
-.capstrip:empty{display:none;min-height:0;padding:0;margin:0;border:none}
-.capstrip .cp{width:30px;height:30px;flex:0 0 auto;background:rgba(128,128,128,.12);border-radius:6px;padding:2px;box-sizing:border-box}
-.capstrip .cp .pc,.capstrip .cp img{width:100%!important;height:100%!important}
+.cap:empty{display:none;min-height:0;padding:0;margin:0;border:none}
+.cap .cp{width:30px;height:30px;flex:0 0 auto;background:rgba(128,128,128,.12);border-radius:6px;padding:2px;box-sizing:border-box}
+.cap .cp .pc,.cap .cp img{width:100%!important;height:100%!important}
 .cp{width:24px;height:24px;display:inline-block}.cp .pc{width:100%;height:100%}.cp.rot .pc img{transform:rotate(180deg)}
 .nv button{flex:1;min-width:0;font-size:18px;padding:8px 0}
 button:disabled{opacity:.4;cursor:default}
@@ -423,7 +429,7 @@ button:hover,.btn:hover{border-color:rgba(165,180,252,.45)}
 #tabs{background:rgba(12,18,36,.75);backdrop-filter:blur(12px);border-color:var(--line);box-shadow:0 0 0 1px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.25)}
 #tabs button.on{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 16px var(--glow)}
 #bd{box-shadow:0 0 0 1px rgba(148,163,255,.15),0 12px 40px rgba(0,0,0,.4),0 0 60px rgba(99,102,241,.12);border-radius:10px}
-.capstrip{background:rgba(12,18,36,.7)!important;border-color:rgba(52,211,153,.45)!important;backdrop-filter:blur(8px)}
+.cap{background:rgba(12,18,36,.7)!important;border-color:rgba(52,211,153,.45)!important;backdrop-filter:blur(8px)}
 #st{text-shadow:0 0 20px rgba(125,211,252,.25)}
 #netdock{background:rgba(12,18,36,.92);border-color:rgba(148,163,255,.3);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 40px rgba(99,102,241,.15);backdrop-filter:blur(16px)}
 #netdock .net-head{background:linear-gradient(135deg,var(--acc),var(--acc2))}
@@ -468,11 +474,11 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <header id="topbar">
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.18</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.19</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2a2.8 2.8 0 0 0-.9 5.45c-1.15.45-2 1.55-2.15 2.85h6.1c-.15-1.3-1-2.4-2.15-2.85A2.8 2.8 0 0 0 12 3.2zM9.2 12.2l-.7 2.3h7l-.7-2.3H9.2zm-.9 3.5L7.2 20.5h9.6l-1.1-4.8H8.3z"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.61 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.73 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.22l2.39-.96c.5.39 1.04.71 1.63.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.25.12.54.02.68-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button></div>
 </header>
 <main>
-<p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="capstrip"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="capstrip"></div>
+<p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="cap"></div>
 <div id="an"></div>
 <div id="nav"></div>
 <div id="chatbox" hidden><div id="chatlog"></div><div class="row"><input type="text" id="chatin" placeholder="Напиши нейросети…" style="flex:1;min-width:0"><button data-a="send" title="Отправить">➤</button></div></div>
@@ -482,7 +488,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 const $=s=>document.querySelector(s),gcd=(a,b)=>b?gcd(b,a%b):a,esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),clone=b=>JSON.parse(JSON.stringify(b));
 const O=[[1,0],[-1,0],[0,1],[0,-1]],D=[[1,1],[1,-1],[-1,1],[-1,-1]],ray=(v,n)=>v.map(a=>[...a,n]);
 const PAL=['#101018','#ffffff','#e3dfd3','#aaa597','#7a7a90','#4a4a60','#2c2c3c','#d93b3b','#f0892d','#f2d14b','#5cc25a','#4cc3e8','#3a6fd8','#7a4fd1','#e86fb0','#8a5a35'];
-const BP=[['#b8895c','#5c2a0e'],['#8b7ab8','#2a0848'],['#3d9a6a','#043d2e'],['#5a8ab0','#152a48'],['#b86a78','#5c1020']],BL='.'.repeat(256),E16='.'.repeat(16);
+const BP=[['#8b7ab8','#2a0848'],['#5a8ab0','#152a48'],['#3d9a6a','#043d2e'],['#c9956a','#5c2a0e'],['#b86a78','#5c1020']],BL='.'.repeat(256),E16='.'.repeat(16);
 const R=a=>['........','........',...a,'........'],mir=r=>r+[...r].reverse().join('');
 const ART={
 k:R(['.......f','.....fff','.....fff','.......f','....ffff','...fffff','...fffff','...fffff','....ffff','..oooooo','...fffff','..ffffff','..ffffff']).map(mir),
@@ -1473,6 +1479,100 @@ function delPosition(id){
  delete S.positions[id];save();render();
 }
 
+
+function importAnyCode(raw, targetFolder){
+ raw=(raw||'').trim();
+ if(!raw){alert('Вставь код');return false}
+ const fid=targetFolder||((S.pf&&S.pf!=='std')?S.pf:'mine');
+ try{
+  /* board */
+  if(/^bd1:/i.test(raw)){
+   const d=JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
+   const id='b'+Date.now().toString(36);
+   S.boards[id]={...d.board,id,f:fid};
+   if(d.C){Object.assign(C,d.C);mkP()}
+   save();alert('Доска «'+(d.board&&d.board.name||id)+'» импортирована');
+   return true;
+  }
+  /* position pack */
+  if(/^pos1:/i.test(raw)){
+   ensurePositions();
+   const d=JSON.parse(decodeURIComponent(escape(atob(raw.slice(5)))));
+   const id='p'+Date.now().toString(36);
+   S.positions[id]={id,name:(d.name||'Позиция').slice(0,40),f:fid,data:d.data||d.pack||'',blurb:d.blurb||'',when:Date.now()};
+   save();alert('Позиция импортирована');
+   return true;
+  }
+  /* single piece cp1 with items length 1 or pack */
+  if(raw.includes('cp1:')||/^[A-Za-z0-9+/=_-]+$/.test(raw.replace(/\s/g,''))){
+   try{
+    const d=dec64(raw);
+    if(d&&(Array.isArray(d.items)||Array.isArray(d.boards)||Array.isArray(d.positions)||d.pack!=null)){
+     const id='f'+Date.now().toString(36);
+     const useNewFolder=!!(d.pack||(d.items&&d.items.length>1)||(d.boards&&d.boards.length)||(d.positions&&d.positions.length));
+     const dest=useNewFolder?(S.fl.push({id,name:(d.pack||'Импорт').slice(0,30)}),S.pf=id,id):fid;
+     const n=importItems(dest,d.items||[]);
+     let nb=0;(d.boards||[]).forEach((b,i)=>{const bid='b'+Date.now().toString(36)+i;S.boards[bid]={...b,id:bid,f:dest};nb++});
+     ensurePositions();let np=0;(d.positions||[]).forEach((p,i)=>{const pid='p'+Date.now().toString(36)+i;S.positions[pid]={...p,id:pid,f:dest};np++});
+     save();
+     alert('Загружено: фигур '+n+(nb?', досок '+nb:'')+(np?', позиций '+np:'')+(useNewFolder?' → папка «'+folderName(dest)+'»':''));
+     return true;
+    }
+    if(d&&d.id&&(d.sw||d.m)){
+     /* single piece object */
+     const nid='c'+Date.now().toString(36);
+     C[nid]={...d,id:nid,f:fid};mkP();save();alert('Фигура «'+(d.name||nid)+'» импортирована');return true;
+    }
+   }catch(e){}
+  }
+  alert('Не удалось распознать код. Поддерживаются: папка/фигуры (cp1), доска (bd1), позиция (pos1).');
+  return false;
+ }catch(x){alert('Ошибка чтения кода');return false}
+}
+function copyPiece(k){
+ if(!C[k]&&!P[k])return;
+ const src=C[k]||P[k];
+ const nid='c'+Date.now().toString(36);
+ C[nid]={...JSON.parse(JSON.stringify(src)),id:nid,name:(src.name||k)+' копия',f:(S.pf&&S.pf!=='std')?S.pf:(src.f||'mine')};
+ if(STD[nid])delete STD[nid];
+ mkP();save();render();
+}
+function movePieceToFolder(k,fid){
+ if(!C[k]){alert('Стандартную фигуру нельзя перенести');return}
+ C[k].f=fid;save();render();
+}
+function copyBoard(id){
+ const b=S.boards[id];if(!b)return;
+ const nid='b'+Date.now().toString(36);
+ S.boards[nid]={...JSON.parse(JSON.stringify(b)),id:nid,name:(b.name||'Доска')+' копия',f:b.f||'mine'};
+ save();render();
+}
+function copyPosition(id){
+ ensurePositions();
+ const p=S.positions[id];if(!p)return;
+ const nid='p'+Date.now().toString(36);
+ S.positions[nid]={...p,id:nid,name:(p.name||'Позиция')+' копия',when:Date.now()};
+ save();render();
+}
+function copyFolder(fid){
+ if(fid==='std'){alert('Стандартную папку нельзя копировать');return}
+ const name=folderName(fid)+' копия';
+ const id='f'+Date.now().toString(36);
+ S.fl.push({id,name:name.slice(0,30)});
+ Object.keys(C).forEach(k=>{if(C[k].f===fid){const nid='c'+Date.now().toString(36)+k;C[nid]={...JSON.parse(JSON.stringify(C[k])),id:nid,f:id}}});
+ Object.values(S.boards||{}).forEach(b=>{if((b.f||'mine')===fid){const nid='b'+Date.now().toString(36);S.boards[nid]={...JSON.parse(JSON.stringify(b)),id:nid,f:id}}});
+ ensurePositions();
+ Object.values(S.positions||{}).forEach(p=>{if((p.f||'mine')===fid){const nid='p'+Date.now().toString(36);S.positions[nid]={...JSON.parse(JSON.stringify(p)),id:nid,f:id}}});
+ mkP();S.pf=id;save();render();
+}
+function sharePosition(id){
+ ensurePositions();
+ const p=S.positions[id];if(!p)return;
+ const code='pos1:'+btoa(unescape(encodeURIComponent(JSON.stringify({name:p.name,data:p.data,blurb:p.blurb}))));
+ SHR=code;try{navigator.clipboard.writeText(code)}catch(e){}
+ alert('Код позиции скопирован');
+}
+
 function editPosition(id){
  ensurePositions();
  const p=S.positions[id];if(!p)return;
@@ -1696,7 +1796,7 @@ const CN={h:'Человек',s:'Сложный бот',p:'Простой бот'
 const ctlName=c=>CN[c];
 const modeName=()=>{const k=PRESETS.find(([n,c])=>c.w==S.ctl.w&&c.b==S.ctl.b);return k?k[0]:'Свой'};
 const soundRow=()=>`<div class="row" style="flex-wrap:wrap">${[['m','Ход'],['c','Взятие'],['k','Шах'],['e','Конец']].map(([k,l])=>`<label style="display:flex;align-items:center;gap:6px;margin:0">${l}<select data-sv="${k}" style="width:auto">${Object.keys(SETS).map(x=>`<option value="${x}" ${S.sv[k]==x?'selected':''}>${SN[x]}</option>`).join('')}</select></label>`).join('')}</div>`;
-const UIC=[['Зелёный','#2e7d5b'],['Фиолетовый','#6a3fd4'],['Синий','#2f5d8a'],['Оранжевый','#c8642a'],['Красный','#b03a3a']];
+const UIC=[['Фиолетовый','#6a3fd4'],['Синий','#2f5d8a'],['Зелёный','#2e7d5b'],['Оранжевый','#c8642a'],['Красный','#b03a3a']];
 const ICO_PLAY='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M7 4.8v14.4c0 .9 1 1.4 1.7.9l11.2-7.2c.7-.4.7-1.4 0-1.8L8.7 3.9C8 3.4 7 3.9 7 4.8z"/></svg>';
 const ICO_PAUSE='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5.5" y="4" width="4.8" height="16" rx="1.4" fill="currentColor"/><rect x="13.7" y="4" width="4.8" height="16" rx="1.4" fill="currentColor"/></svg>';
 const NAV=()=>`<div class="row nv"><button data-a="nav" data-v="first" title="В начало">⏮</button><button data-a="nav" data-v="prev" title="Назад">◀</button><button data-a="pause" class="ico-btn ${S.paused?'on':''}" ${playersList().some(c=>(S.ctl[c]||'h')!='h')?'':'disabled'} title="${S.paused?'Продолжить ботов/нейросеть':'Пауза ботов/нейросети'}">${S.paused?ICO_PLAY:ICO_PAUSE}</button><button data-a="nav" data-v="next" title="Вперёд">▶</button><button data-a="nav" data-v="last" title="В конец">⏭</button><button data-a="undo" title="Отменить ход">↶</button></div>
@@ -1743,15 +1843,17 @@ ${(S.rules.portals||S.rules.win==='crystal')?`<button data-a="clrsp">Очист�
 <p class="hint">Размер: ${BW()}×${BH()}. Портал: два нажатия — пара телепортов. Кристалл: одна клетка победы. Стандарт расставляет армии к краям.</p>
 <div class="row nv"><button data-a="sundo" class="ic" title="Отменить">◀</button><button data-a="sredo" class="ic" title="Повторить">▶</button><button data-a="std" class="ic" title="Стандартная расстановка">↶</button><button data-a="clr" class="ic" title="Очистить доску">🗑</button><button data-a="apply" class="on apply" title="Применить">Применить</button></div>`,
 pieces:()=>{
- ensureBoards();
+ ensureBoards();ensurePositions();
  const boardsInFolder=Object.values(S.boards||{}).filter(b=>b.id!=='std'&&(b.f||'mine')===S.pf);
+ const fopts=folders().filter(f=>f.id!=='std').map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
  return E?form():`<div class="row">${folders().map(f=>`<button data-a="pf" data-v="${f.id}" class="chip ${S.pf==f.id?'on':''}">${esc(f.name)}</button>`).join('')}<button data-a="nf">+ Папка</button></div>
-${S.pf!='std'?`<div class="row"><button data-a="add" class="on">Новая фигура</button><button data-a="rf">Переименовать</button>${S.pf!='mine'?'<button data-a="df">Удалить папку</button>':''}<button data-a="shf">Поделиться папкой</button></div>`:'<p class="hint">Стандартные фигуры можно изменить, но не удалить. Доски хранятся в пользовательских папках.</p>'}
-<textarea id="shr" rows="3" style="width:100%" placeholder="Код папки, фигуры или доски. Вставь и нажми «Загрузить».">${SHR}</textarea>
-<div class="row"><button data-a="pki">Загрузить из поля (в новую папку)</button></div>
-${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span class="mini-bd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span title="${esc(b.name)}">${esc(b.name)}</span><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Ссылка</button><button data-a="delboard" data-v="${b.id}">Удалить</button></div></div>`).join(''):''}
-`+inFolder(S.pf).map(k=>`<div class="li">${pc({t:k,c:'w'})}${pc({t:k,c:'b'})}<span title="${esc(P[k].name)}">${esc(P[k].name)}</span><div class="row" style="margin:0;flex:1 1 auto;justify-content:flex-end;gap:6px"><button data-a="ed" data-v="${k}">Изменить</button>${C[k]&&!STD[k]?`<button data-a="shp" data-v="${k}">Поделиться</button>`:''}</div></div>`).join('')
-+(ensurePositions(),'')+(()=>{const pos=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);return pos.length?`<h4>Позиции</h4>`+pos.map(p=>`<div class="li"><span>📌 ${esc(p.name)}</span><small class="hint">${esc(p.blurb||'')}</small><button data-a="loadpos" data-v="${p.id}">Загрузить</button><button data-a="editpos" data-v="${p.id}">Изменить</button><button data-a="delpos" data-v="${p.id}">Удалить</button></div>`).join(''):`<p class="hint">Позиций в этой папке нет. Сохрани из игры кнопкой «Сохранить позицию в папку».</p>`})()
+${S.pf!='std'?`<div class="row"><button data-a="add" class="on">Новая фигура</button><button data-a="rf">Переименовать</button>${S.pf!='mine'?'<button data-a="df">Удалить папку</button>':''}<button data-a="shf">Поделиться папкой</button>${S.pf!='std'?`<button data-a="copyfolder" data-v="${S.pf}">Копировать папку</button>`:''}</div>`:'<p class="hint">Стандартные фигуры можно изменить, но не удалить. Свои фигуры, доски и позиции — в пользовательских папках.</p>'}
+<p class="hint" style="margin-top:10px"><b>Импорт кода</b> — папка, фигура, доска или позиция</p>
+<textarea id="shr" rows="3" style="width:100%" placeholder="Вставь любой код (cp1 / bd1 / pos1)…">${SHR}</textarea>
+<div class="row"><button data-a="impany" class="on">Загрузить код</button></div>
+${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span class="mini-bd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span title="${esc(b.name)}">${esc(b.name)}</span><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end;gap:4px;flex-wrap:wrap"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Код</button><button data-a="copyboard" data-v="${b.id}">Копия</button><select data-movef="board" data-id="${b.id}" style="width:auto;max-width:110px"><option value="">→ папка</option>${fopts}</select><button data-a="delboard" data-v="${b.id}">Удалить</button></div></div>`).join(''):''}
+`+inFolder(S.pf).map(k=>`<div class="li">${pc({t:k,c:'w'})}${pc({t:k,c:'b'})}<span title="${esc(P[k].name)}">${esc(P[k].name)}</span><div class="row" style="margin:0;flex:1 1 auto;justify-content:flex-end;gap:4px;flex-wrap:wrap"><button data-a="ed" data-v="${k}">Изменить</button>${C[k]&&!STD[k]?`<button data-a="shp" data-v="${k}">Код</button><button data-a="copypiece" data-v="${k}">Копия</button><select data-movef="piece" data-id="${k}" style="width:auto;max-width:110px"><option value="">→ папка</option>${fopts}</select>`:''}</div></div>`).join('')
++(()=>{const pos=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);return pos.length?`<h4>Позиции</h4>`+pos.map(p=>`<div class="li"><span>📌 ${esc(p.name)}</span><small class="hint">${esc(p.blurb||'')}</small><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end;gap:4px;flex-wrap:wrap"><button data-a="loadpos" data-v="${p.id}">Загрузить</button><button data-a="editpos" data-v="${p.id}">Изменить</button><button data-a="sharepos" data-v="${p.id}">Код</button><button data-a="copypos" data-v="${p.id}">Копия</button><select data-movef="pos" data-id="${p.id}" style="width:auto;max-width:110px"><option value="">→ папка</option>${fopts}</select><button data-a="delpos" data-v="${p.id}">Удалить</button></div></div>`).join(''):`<p class="hint">Позиций в этой папке нет. Сохрани из игры кнопкой «Сохранить позицию в папку».</p>`})()
 },
 boards:()=>{
  ensureBoards();
@@ -1770,8 +1872,7 @@ ${userList.map(b=>`<div class="mode-card"><h4>${esc(b.name)} ${b.id===S.curBoard
 <p>${esc(b.notes||'Пользовательская')} · ${b.w||8}×${b.h||8} · игроков: ${b.players||2} · папка: ${esc(folderName(b.f||'mine'))}</p>
 <div class="row" style="flex-wrap:wrap;width:100%"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="edboard" data-v="${b.id}">Изменить</button><button data-a="shareboard" data-v="${b.id}">Код</button><button data-a="delboard" data-v="${b.id}">Удалить</button>
 <select data-boardf="${b.id}" style="width:auto;max-width:140px">${folders().filter(f=>f.id!=='std').map(f=>`<option value="${f.id}" ${(b.f||'mine')===f.id?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div></div>`).join('')}
-<textarea id="bshr" rows="2" style="width:100%" placeholder="Код доски (bd1:…)"></textarea>
-<div class="row"><button data-a="impboard">Импорт доски</button></div>
+<p class="hint">Импорт кода доски — во вкладке «Фигуры» (единое поле).</p>
 <p class="hint">Быстрый старт без сохранения: шаблон правил → сразу в игру. Для постоянного набора лучше «Новая доска».</p>
 <div class="row" style="flex-wrap:wrap">${MODES.map(m=>`<button data-a="applymode" data-v="${m.id}" class="chip" title="${esc(m.desc)}">${esc(m.name)}</button>`).join('')}</div>`;
 }
@@ -1992,12 +2093,18 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
     let px=String(S.ai.proxy).trim();
     if(/corsproxy\.io/i.test(px)){
      fetchUrl='https://corsproxy.io/?'+encodeURIComponent(endpoint);
+    }else if(/corsproxy\.org/i.test(px)){
+     fetchUrl='https://corsproxy.org/?'+encodeURIComponent(endpoint);
     }else if(/codetabs\.com/i.test(px)){
      fetchUrl='https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(endpoint);
+    }else if(/thingproxy|freeboard/i.test(px)){
+     fetchUrl='https://thingproxy.freeboard.io/fetch/'+endpoint;
     }else if(px.includes('allorigins')){
      fetchUrl=px.replace(/\/$/,'')+'/raw?url='+encodeURIComponent(endpoint);
     }else if(px.endsWith('?')||px.includes('?url=')||px.includes('?quest=')){
      fetchUrl=px+(px.endsWith('=')||px.endsWith('?')?'':'&url=')+encodeURIComponent(endpoint);
+    }else if(px.endsWith('/fetch/')||px.endsWith('/fetch')){
+     fetchUrl=px.replace(/\/?$/,'')+'/'+endpoint;
     }else{
      fetchUrl=px.replace(/\/$/,'')+'/?url='+encodeURIComponent(endpoint);
     }
@@ -2044,7 +2151,7 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
  /* CORS / прокси: несколько вариантов для Zveno с github.io */
  if(!r.t&&/zveno\.ai|openrouter\.ai/i.test(endpoint)){
   const tried=[String(S.ai.proxy||'')];
-  const list=['https://corsproxy.io/?','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.org/?'];
+  const list=['https://corsproxy.io/?','https://corsproxy.org/?','https://api.codetabs.com/v1/proxy?quest=','https://thingproxy.freeboard.io/fetch/'];
   for(const px of list){
    if(tried.includes(px))continue;
    tried.push(px);
@@ -2349,16 +2456,12 @@ const aiSettings=()=>{
 </select></label>
 <label>Стиль ответов<textarea data-ai="persona" rows="3" style="width:100%">${esc(S.ai.persona)}</textarea></label>
 <div class="mode-card" style="margin:12px 0">
-<b>Речь нейросети (токены / деньги)</b>
-<label style="margin-top:8px"><input type="checkbox" data-ai="silent" ${!S.ai.chat&&!S.ai.talk?'checked':''}> <b>Тихий режим</b> — только ходит, ничего не пишет</label>
-<label><input type="checkbox" data-ai="chat" ${S.ai.chat?'checked':''}> Отвечать в чате, когда пишешь ей</label>
-<label><input type="checkbox" data-ai="talk" ${S.ai.talk?'checked':''}> Комментировать свои ходы в партии</label>
-<p class="hint" style="margin:6px 0 0">Тихий режим выключает оба пункта выше. Ходы по API остаются; текст и лишний JSON не запрашиваются.</p>
+<label style="margin:0"><input type="checkbox" data-ai="chat" ${S.ai.chat?'checked':''}> <b>Нейросеть пишет в чат</b></label>
+<p class="hint" style="margin:6px 0 0">Выкл — только ходит, без текста (экономит токены). Вкл — отвечает в чате.</p>
 </div>
 <label><input type="checkbox" data-ai="strict" ${S.ai.strict?'checked':''}> Строгий режим: только легальные ходы</label>
-<label><input type="checkbox" data-ai="hybrid" ${S.ai.hybrid?'checked':''}> Гибрид с движком: подменять совсем слабые ходы модели</label>
-<label><input type="checkbox" data-ai="vision" ${S.ai.vision?'checked':''}> Картинка доски (для мультимодальных: DeepSeek-VL и т.п.)</label>
-<p class="hint">Строгий + гибрид — лучший баланс. Vision шлёт PNG; нужна vision-модель. Без строгого режима человек тоже может ходить «вольными» ходами, если у кого-то включена нейросеть.</p>
+<label><input type="checkbox" data-ai="hybrid" ${S.ai.hybrid?'checked':''}> Гибрид с движком</label>
+<label><input type="checkbox" data-ai="vision" ${S.ai.vision?'checked':''}> Картинка доски (vision-модели)</label>
 <div class="row"><button data-a="aitest" class="on">Проверить подключение</button></div>
 <p id="aistat" class="hint">Проверка шлёт короткий запрос. Итоговый URL: <code style="word-break:break-all">${esc(aiEndpoint()||'—')}</code></p>
 <p class="hint"><b>Zveno:</b> zveno.ai → API keys → ключ. Модель по умолчанию <code>deepseek/deepseek-v4.1-flash-1017</code>. URL: <code>https://api.zveno.ai/v1</code>.<br>
@@ -3250,6 +3353,13 @@ document.addEventListener('click',e=>{
  else if(a=='loadpos'){loadPosition(v);return}
  else if(a=='delpos'){delPosition(v);return}
  else if(a=='editpos'){editPosition(v);return}
+ else if(a=='impany'){const raw=$('#shr')?.value||'';if(importAnyCode(raw)){SHR='';render()}return}
+ else if(a=='copypiece'){copyPiece(v);return}
+ else if(a=='copyboard'){copyBoard(v);return}
+ else if(a=='copypos'){copyPosition(v);return}
+ else if(a=='copyfolder'){copyFolder(v);return}
+ else if(a=='sharepos'){sharePosition(v);return}
+
  else if(a=='analyze'){runAnalysis();return}
  else if(a=='send'){sendChat();return}
  else if(a=='avclear'){if(v==='me'){S.avMe=null;S.avMeEmoji=null}else{S.avAI=null;S.avAIEmoji=null}save();render();return}
@@ -3307,7 +3417,7 @@ document.addEventListener('click',e=>{
  else if(a=='nf'){const n=prompt('Название папки');if(n&&n.trim()){const id='f'+Date.now().toString(36);S.fl.push({id,name:n.trim().slice(0,30)});S.pf=id;save()}else return}
  else if(a=='rf'){const n=prompt('Новое название',folderName(S.pf));if(n&&n.trim()){S.fl.find(x=>x.id==S.pf).name=n.trim().slice(0,30);save()}else return}
  else if(a=='df'){if(confirm('Удалить папку? Фигуры и доски переедут в «Мои фигуры».')){Object.values(C).forEach(p=>{if(p.f==S.pf)p.f='mine'});Object.values(S.boards||{}).forEach(b=>{if(b.f==S.pf)b.f='mine'});Object.values(S.positions||{}).forEach(p=>{if(p.f==S.pf)p.f='mine'});S.fl=S.fl.filter(x=>x.id!=S.pf);S.pf='mine';mkP();save()}else return}
- else if(a=='pki'){if(!$('#shr').value.trim()){alert('Сначала вставь код в поле выше');return}try{const d=dec64($('#shr').value);if(!Array.isArray(d.items)&&!Array.isArray(d.boards))throw 0;const id='f'+Date.now().toString(36);S.fl.push({id,name:(d.pack||'Импорт').slice(0,30)});S.pf=id;SHR='';const n=importItems(id,d.items||[]);let nb=0;(d.boards||[]).forEach((b,i)=>{const bid='b'+Date.now().toString(36)+i;S.boards[bid]={...b,id:bid,f:id};nb++});ensurePositions();let np=0;(d.positions||[]).forEach((p,i)=>{const pid='p'+Date.now().toString(36)+i;S.positions[pid]={...p,id:pid,f:id};np++});render();alert('Загружено фигур: '+n+(nb?', досок: '+nb:'')+(np?', позиций: '+np:''))}catch(x){alert('Не получилось прочитать код. Скопируй код целиком, без обрезанного начала или конца, и попробуй снова.')}return}
+ else if(a=='pki'){if(importAnyCode($('#shr')?.value||'')){SHR='';render()}return}
  else if(a=='ed')edit(v);
  else if(a=='cx')E=null;
  else if(a=='cell'){const o=E[t.dataset.q],k=t.dataset.x+','+t.dataset.y,n=((o[k]||0)+1)%3;n?o[k]=n:delete o[k];t.className='gc'+(n?' on':'');t.textContent=n==1?'●':n==2?'∞':'';return}
@@ -3391,8 +3501,12 @@ return}
  if(t.dataset&&t.dataset.sv){S.sv[t.dataset.sv]=t.value;save();playS(t.dataset.sv,t.value);return}
  if(t.dataset&&t.dataset.ui){S.ui=t.value;theme();save();return}
  if(t.dataset&&t.dataset.ai){
+  if(t.dataset.ai==='chat'){
+   S.ai.chat=t.checked?1:0;if(!t.checked)S.ai.talk=0;
+   save();updChat();render();return
+  }
   if(t.dataset.ai==='silent'){
-   if(t.checked){S.ai.chat=0;S.ai.talk=0}else{/* снимаем тихий — чат не включаем сами */}
+   if(t.checked){S.ai.chat=0;S.ai.talk=0}
    save();updChat();render();return
   }
   S.ai[t.dataset.ai]=t.type=='checkbox'?(t.checked?1:0):(t.dataset.ai=='timeout'?+t.value:t.value);
@@ -3403,6 +3517,13 @@ return}
  if(t.dataset&&t.dataset.fog){const k=t.dataset.fog;S.fog[k]=t.type=='checkbox'?(t.checked?1:0):+t.value;save();return}
  if(t.dataset&&t.dataset.rule){const k=t.dataset.rule;S.rules[k]=t.type=='checkbox'?(t.checked?1:0):(k==='checksToWin'?+t.value:t.value);save();return}
  if(t.dataset&&t.dataset.boardf){const bid=t.dataset.boardf;if(S.boards[bid]){S.boards[bid].f=t.value;save();render()}return}
+ if(t.dataset&&t.dataset.movef&&t.value){
+  const kind=t.dataset.movef,id=t.dataset.id,fid=t.value;
+  if(kind==='piece'&&C[id]){C[id].f=fid;save();render()}
+  else if(kind==='board'&&S.boards[id]){S.boards[id].f=fid;save();render()}
+  else if(kind==='pos'&&S.positions&&S.positions[id]){S.positions[id].f=fid;save();render()}
+  return;
+ }
  if(t.dataset&&t.dataset.bk&&boardEdit){const k=t.dataset.bk;boardEdit[k]=t.type==='checkbox'?(t.checked?1:0):((k==='players'||k==='w'||k==='h')?+t.value:t.value);return}
  if(t.dataset&&t.dataset.bkcol!=null&&boardEdit){boardEdit.colors[+t.dataset.bkcol]=t.value;return}
  if(t.dataset&&t.dataset.br&&boardEdit){const k=t.dataset.br;boardEdit.rules[k]=t.type==='checkbox'?(t.checked?1:0):(k==='checksToWin'?+t.value:t.value);return}
@@ -3437,7 +3558,15 @@ S.bh=8;S.bw=8;S.players=2;S.curBoard='std';
 S.rules={...DEF_RULES};S.fog={on:0,pass:0,radius:2,lines:1,diag:1,around:1,hidePieces:1,silhouettes:0,autoHide:1,delay:400};
 S.checksCount={w:0,b:0};specials=[];
 if(!S.ctl)S.ctl={w:'h',b:'h'};
-S.ctl={w:S.ctl.w||'h',b:S.ctl.b||'h'}; /* на старте только 2 стороны */
+/* только локальные режимы; lock/net с прошлой сессии блокировали ходы */
+(function(){
+  const ok=new Set(['h','p','s','a']);
+  const c=S.ctl||{};
+  S.ctl={w:ok.has(c.w)?c.w:'h',b:ok.has(c.b)?c.b:'h'};
+  if(c.r&&ok.has(c.r))S.ctl.r=c.r;
+  if(c.g&&ok.has(c.g))S.ctl.g=c.g;
+})();
+linkPlay=0;
 side='w';tool='p';tab='play';
 mkP();start=std();newG();
 if(location.hash.startsWith('#g='))unpackAny(location.hash.slice(3)).then(()=>render()).catch(()=>{});
