@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.14</title>
+<title>MetaChess v2.15</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -224,7 +224,25 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
 .pxc{aspect-ratio:1;box-shadow:inset 0 0 0 .5px rgba(128,128,128,.3)}
 .sw{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer;background:var(--card)}
 .sw.s{outline:3px solid var(--sel)}
-.bp{width:38px;height:38px;padding:0}
+button.bp, .bp{width:40px;height:40px;min-width:40px;padding:0!important;border:none!important;border-radius:12px!important;
+ overflow:hidden;box-shadow:0 0 0 2px rgba(148,163,255,.28),0 4px 14px rgba(0,0,0,.3);
+ background-clip:padding-box;position:relative;flex:0 0 auto;background-color:transparent}
+button.bp.on, .bp.on, button.bp:focus{box-shadow:0 0 0 2.5px var(--acc),0 0 18px var(--glow)}
+button.bp-check, .bp-check{
+ background-size:50% 50%!important;
+ background-position:0 0, 100% 0, 0 100%, 100% 100%!important;
+ background-repeat:no-repeat!important}
+input[type=color].swatch{
+ -webkit-appearance:none;appearance:none;width:40px;height:40px;min-width:40px;padding:0;border:none;
+ border-radius:12px;cursor:pointer;background:transparent;flex:0 0 auto;
+ box-shadow:0 0 0 2px rgba(148,163,255,.28),0 4px 14px rgba(0,0,0,.25);
+ overflow:hidden}
+input[type=color].swatch::-webkit-color-swatch-wrapper{padding:0;border:none;border-radius:12px}
+input[type=color].swatch::-webkit-color-swatch{border:none;border-radius:10px}
+input[type=color].swatch::-moz-color-swatch{border:none;border-radius:10px}
+.swatch-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.swatch-wrap .sw-lab{font-size:11px;opacity:.7;margin:0 2px 0 4px}
+
 input[type=text],select,textarea{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);max-width:100%;box-sizing:border-box}
 label{display:block;margin:10px 0}
 select{width:100%;margin:4px 0}
@@ -366,7 +384,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <header id="topbar">
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.14</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.15</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 </header>
 <main>
@@ -597,7 +615,7 @@ function editBoard(id){
   w:src.w||S.bw||8,
   h:src.h||S.bh||8,
   f:(src.f&&src.f!=='std')?src.f:((S.pf&&S.pf!=='std')?S.pf:'mine'),
-  colors:[src.colors&&src.colors[0]?src.colors[0]:(S.l||'#f0d9b5'),src.colors&&src.colors[1]?src.colors[1]:(S.d||'#b58863')],
+  colors:[src.colors&&src.colors[0]?src.colors[0]:(S.l||'#3d5a80'),src.colors&&src.colors[1]?src.colors[1]:(S.d||'#1a2744')],
   rules:{...DEF_RULES,...(src.rules||S.rules||{})},
   fog:{on:0,pass:0,radius:2,lines:1,diag:1,around:1,hidePieces:1,silhouettes:0,autoHide:1,delay:400,...(src.fog||S.fog||{})},
   useCurrentStart:1
@@ -615,7 +633,7 @@ function saveBoardEdit(){
   w:Math.max(4,Math.min(16,+boardEdit.w||8)),
   h:Math.max(4,Math.min(16,+boardEdit.h||8)),
   teams:2,
-  colors:[boardEdit.colors[0]||'#f0d9b5',boardEdit.colors[1]||'#b58863'],
+  colors:[boardEdit.colors[0]||'#3d5a80',boardEdit.colors[1]||'#1a2744'],
   border:'#2f5d8a',coords:'#55707e',
   rules:{...DEF_RULES,...boardEdit.rules},
   fog:{...boardEdit.fog},
@@ -1550,8 +1568,24 @@ const NAV=()=>`<div class="row nv"><button data-a="nav" data-v="first" title="В
 const U={
 set:()=>`<p class="hint">Звук</p><div class="row"><button data-a="snd" class="${S.snd?'on':''}">Звук: ${S.snd?'вкл':'выкл'}</button></div>
 ${soundRow()}
-<p class="hint">Цвет доски</p><div class="row">${BP.map(([l,d],i)=>`<button data-a="bp" data-v="${i}" class="bp" style="background:linear-gradient(135deg,${l||'#d9e4e8'} 50%,${d||'#7d9aa8'} 50%)"></button>`).join('')}<input type="color" data-c="l" value="${S.l||'#d9e4e8'}"><input type="color" data-c="d" value="${S.d||'#7d9aa8'}"></div>
-<p class="hint">Цвет интерфейса</p><div class="row">${UIC.map(([n,c])=>`<button data-a="uic" data-v="${c}" class="bp" style="background:${c}" title="${n}"></button>`).join('')}<input type="color" data-ui="1" value="${S.ui||'#2f5d8a'}"><button data-a="uir">Сбросить</button></div>
+<p class="hint">Цвет доски</p>
+<div class="row swatch-wrap">${BP.map(([l,d],i)=>{
+  const sel=(S.l===l&&S.d===d)?' on':'';
+  return `<button data-a="bp" data-v="${i}" class="bp bp-check${sel}" title="Пресет ${i+1}" style="background-image:linear-gradient(${l},${l}),linear-gradient(${d},${d}),linear-gradient(${d},${d}),linear-gradient(${l},${l});background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat"></button>`;
+}).join('')}
+<span class="sw-lab">Светлая</span>
+<input type="color" class="swatch" data-c="l" value="${S.l||'#3d5a80'}" title="Светлые клетки">
+<span class="sw-lab">Тёмная</span>
+<input type="color" class="swatch" data-c="d" value="${S.d||'#1a2744'}" title="Тёмные клетки">
+</div>
+<p class="hint">Цвет интерфейса</p>
+<div class="row swatch-wrap">${UIC.map(([n,c])=>{
+  const sel=(S.ui===c)?' on':'';
+  return `<button data-a="uic" data-v="${c}" class="bp${sel}" style="background:${c}" title="${n}"></button>`;
+}).join('')}
+<input type="color" class="swatch" data-ui="1" value="${S.ui||'#6366f1'}" title="Свой цвет">
+<button data-a="uir">Сбросить</button>
+</div>
 ${avatarSettings()}${aiSettings()}`,
 play:()=>`<p class="hint">Управление сторонами (локально / боты / нейросеть). В сети места выбираются в блоке «Игра по сети» внизу.</p>
 <div class="row"><button data-a="flip" class="${S.flip?'on':''}">Перевернуть доску</button><button data-a="duo" class="${S.duo?'on':''}">Вдвоём: чёрные вверх ногами</button></div>
@@ -1969,7 +2003,7 @@ function boardImageDataUrl(){
   cv.width=W*cell+pad*2;cv.height=H*cell+pad*2;
   const x=cv.getContext('2d');
   x.fillStyle='#1a252e';x.fillRect(0,0,cv.width,cv.height);
-  const light=S.l||'#f0d9b5',dark=S.d||'#b58863';
+  const light=S.l||'#3d5a80',dark=S.d||'#1a2744';
   for(let r=0;r<H;r++)for(let c=0;c<W;c++){
    const seen=!vis||(vis[r]&&vis[r][c]);
    if(!seen){
@@ -3051,7 +3085,7 @@ document.addEventListener('click',e=>{
  else if(a=='clr'){if(!confirm('Очистить доску? Все фигуры будут удалены.'))return;pushSH();start=empty();save()}
  else if(a=='sundo'){if(SH.length){SHRD.push(JSON.stringify(start));start=JSON.parse(SH.pop());save()}}
  else if(a=='sredo'){if(SHRD.length){SH.push(JSON.stringify(start));start=JSON.parse(SHRD.pop());save()}}
- else if(a=='bp'){[S.l,S.d]=BP[v];theme();save()}
+ else if(a=='bp'){[S.l,S.d]=BP[v];theme();save();render();return}
  else if(a=='snd'){S.snd=S.snd?0:1;save()}
  else if(a=='ctl'){const[c,k]=v.split(':');S.ctl[c]=k;linkPlay=0;if(k!='h')S.paused=1;save();if(cur==REC.length-1)botCheck()}
  else if(a=='pause'){S.paused=S.paused?0:1;save();if(!S.paused)botCheck()}
