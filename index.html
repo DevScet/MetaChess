@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.16</title>
+<title>MetaChess v2.17</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -102,10 +102,15 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
 #bd.ed{touch-action:none}
 .sq{min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;font-weight:400}
 .sq *{pointer-events:none}
-.l{background:var(--l)}.d{background:var(--d)}
-.sq em{position:absolute;font:800 10px/1 Manrope,sans-serif;font-style:normal}
+.l{background:linear-gradient(145deg,color-mix(in srgb,var(--l) 82%,#fff) 0%,var(--l) 55%,color-mix(in srgb,var(--l) 75%,#1a1030) 100%)}
+.d{background:linear-gradient(145deg,color-mix(in srgb,var(--d) 70%,#6b7cff) 0%,var(--d) 50%,color-mix(in srgb,var(--d) 55%,#000) 100%)}
+.sq em{position:absolute;font:800 10px/1 Manrope,sans-serif;font-style:normal;z-index:6;pointer-events:none;
+ text-shadow:0 0 3px rgba(0,0,0,.85),0 1px 2px rgba(0,0,0,.6);opacity:.95}
 .fl{left:3px;bottom:2px}.rk{right:3px;top:2px}
-.l em{color:var(--d)}.d em{color:var(--l)}
+.fl2{right:3px;top:2px;transform:rotate(180deg)}.rk2{left:3px;bottom:2px;transform:rotate(180deg)}
+.l em{color:rgba(255,255,255,.92)}.d em{color:rgba(255,255,255,.88)}
+.sq .pc{z-index:1}
+#bd{box-shadow:0 0 0 1px rgba(148,163,255,.18),0 12px 40px rgba(0,0,0,.45),inset 0 0 40px rgba(0,0,0,.12)}
 .lm{background-image:linear-gradient(rgba(240,200,30,.5),rgba(240,200,30,.5))}
 .chk{background-image:radial-gradient(circle,#ff2a2a 0%,rgba(230,20,20,.7) 40%,rgba(230,20,20,0) 75%)}
 .sel{box-shadow:inset 0 0 0 3px var(--sel);z-index:2}
@@ -242,6 +247,18 @@ input[type=color].swatch::-webkit-color-swatch{border:none;border-radius:10px}
 input[type=color].swatch::-moz-color-swatch{border:none;border-radius:10px}
 .swatch-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .swatch-wrap .sw-lab{font-size:11px;opacity:.7;margin:0 2px 0 4px}
+
+.mini-bd{width:36px;height:36px;display:inline-grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1.5px;
+ padding:3px;border-radius:8px;background:rgba(148,163,255,.12);flex-shrink:0;box-sizing:border-box;
+ box-shadow:0 0 0 1px rgba(148,163,255,.25)}
+.mini-bd i{display:block;border-radius:2px}
+.mini-bd i:nth-child(1),.mini-bd i:nth-child(4){background:var(--l)}
+.mini-bd i:nth-child(2),.mini-bd i:nth-child(3){background:var(--d)}
+#netfab.edge-hide{opacity:.45}
+#netfab.edge-hide.edge-right{transform:translateX(50%)}
+#netfab.edge-hide.edge-left{transform:translateX(-50%)}
+#netfab{transition:left .35s cubic-bezier(.22,.9,.3,1),opacity .35s ease,transform .35s cubic-bezier(.22,.9,.3,1),box-shadow .15s}
+
 
 /* color picker popover */
 #colorpop{
@@ -429,8 +446,8 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <header id="topbar">
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.16</small></h1>
-<div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19c1.2-3.2 3.4-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5l5 5M4 20l1.2-4.2L15.5 5.5l3 3L8.2 18.8 4 20z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6.2 6.2l1.6 1.6M16.2 16.2l1.6 1.6M17.8 6.2l-1.6 1.6M7.8 16.2l-1.6 1.6"/></svg></button></div>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.17</small></h1>
+<div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-1.4 0-2.6.9-3.1 2.2L7.5 9.5h9L15.1 5.2C14.6 3.9 13.4 3 12 3zm-4.2 8l.8 9h6.8l.8-9H7.8z"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.61 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.73 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.22l2.39-.96c.5.39 1.04.71 1.63.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.25.12.54.02.68-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button></div>
 </header>
 <main>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="cap"></div>
@@ -1658,7 +1675,7 @@ ${soundRow()}
   return `<button data-a="bp" data-v="${i}" class="bp bp-check${sel}" title="Пресет ${i+1}" style="background-image:linear-gradient(${l},${l}),linear-gradient(${d},${d}),linear-gradient(${d},${d}),linear-gradient(${l},${l});background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat"></button>`;
 }).join('')}
 ${(()=>{const L=S.l||'#3d5a80',D=S.d||'#1a2744';const custom=!BP.some(([a,b])=>a===L&&b===D);
-return `<button type="button" data-a="bpcustom" class="bp bp-check bp-edit${custom?' on':''}" title="Свой цвет доски" style="background-image:linear-gradient(${L},${L}),linear-gradient(${D},${D}),linear-gradient(${D},${D}),linear-gradient(${L},${L});background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat"><span class="bp-pen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.2 4.8l5 5M4 20l1.1-3.9L14.5 6.7l3 3L8 19.2 4 20z"/></svg></span></button>`;
+return `<button type="button" data-a="bpcustom" class="bp bp-check bp-edit${custom?' on':''}" title="Свой цвет доски" style="background-image:linear-gradient(${L},${L}),linear-gradient(${D},${D}),linear-gradient(${D},${D}),linear-gradient(${L},${L});background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat"><span class="bp-pen"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></span></button>`;
 })()}
 </div>
 <p class="hint">Цвет интерфейса</p>
@@ -1667,7 +1684,7 @@ return `<button type="button" data-a="bpcustom" class="bp bp-check bp-edit${cust
   return `<button data-a="uic" data-v="${c}" class="bp${sel}" style="background:${c}" title="${n}"></button>`;
 }).join('')}
 ${(()=>{const c=S.ui||'#6366f1';const custom=S.ui&&!UIC.some(([,x])=>x===S.ui);
-return `<button type="button" data-a="uicustom" class="bp bp-edit${custom?' on':''}" title="Свой цвет интерфейса" style="background:${c}"><span class="bp-pen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.2 4.8l5 5M4 20l1.1-3.9L14.5 6.7l3 3L8 19.2 4 20z"/></svg></span></button>`;
+return `<button type="button" data-a="uicustom" class="bp bp-edit${custom?' on':''}" title="Свой цвет интерфейса" style="background:${c}"><span class="bp-pen"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></span></button>`;
 })()}
 <button data-a="uir">Сбросить</button>
 </div>
@@ -1695,7 +1712,7 @@ pieces:()=>{
 ${S.pf!='std'?`<div class="row"><button data-a="add" class="on">Новая фигура</button><button data-a="rf">Переименовать</button>${S.pf!='mine'?'<button data-a="df">Удалить папку</button>':''}<button data-a="shf">Поделиться папкой</button></div>`:'<p class="hint">Стандартные фигуры можно изменить, но не удалить. Доски хранятся в пользовательских папках.</p>'}
 <textarea id="shr" rows="3" style="width:100%" placeholder="Код папки, фигуры или доски. Вставь и нажми «Загрузить».">${SHR}</textarea>
 <div class="row"><button data-a="pki">Загрузить из поля (в новую папку)</button></div>
-${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span style="width:44px;text-align:center;font-size:22px;flex-shrink:0">◫</span><span title="${esc(b.name)}">${esc(b.name)}</span><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Ссылка</button><button data-a="delboard" data-v="${b.id}">Удалить</button></div></div>`).join(''):''}
+${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span class="mini-bd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span title="${esc(b.name)}">${esc(b.name)}</span><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Ссылка</button><button data-a="delboard" data-v="${b.id}">Удалить</button></div></div>`).join(''):''}
 `+inFolder(S.pf).map(k=>`<div class="li">${pc({t:k,c:'w'})}${pc({t:k,c:'b'})}<span title="${esc(P[k].name)}">${esc(P[k].name)}</span><div class="row" style="margin:0;flex:1 1 auto;justify-content:flex-end;gap:6px"><button data-a="ed" data-v="${k}">Изменить</button>${C[k]&&!STD[k]?`<button data-a="shp" data-v="${k}">Поделиться</button>`:''}</div></div>`).join('')
 +(ensurePositions(),'')+(()=>{const pos=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);return pos.length?`<h4>Позиции</h4>`+pos.map(p=>`<div class="li"><span>📌 ${esc(p.name)}</span><small class="hint">${esc(p.blurb||'')}</small><button data-a="loadpos" data-v="${p.id}">Загрузить</button><button data-a="delpos" data-v="${p.id}">Удалить</button></div>`).join(''):`<p class="hint">Позиций в этой папке нет. Сохрани из игры кнопкой «Сохранить позицию в папку».</p>`})()
 },
@@ -1842,8 +1859,8 @@ const AI_PRESETS={
  zveno:{
   name:'Zveno.ai',
   url:'https://api.zveno.ai/v1/chat/completions',
-  model:'openai/gpt-4o-mini',
-  hint:'Ключ из кабинета zveno.ai. Модели вида vendor/model, например openai/gpt-4o-mini или anthropic/claude-sonnet-4-20250514.'
+  model:'deepseek/deepseek-v4.1-flash-1017',
+  hint:'Ключ из кабинета zveno.ai. По умолчанию deepseek/deepseek-v4.1-flash-1017. Можно openai/gpt-4o-mini и др.'
  },
  openrouter:{
   name:'OpenRouter',
@@ -1936,12 +1953,13 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
    let fetchUrl=endpoint;
    if(S.ai.proxy&&String(S.ai.proxy).trim()){
     let px=String(S.ai.proxy).trim();
-    /* corsproxy.io/?https://...  или  ?url= */
-    if(/corsproxy\.io\/?$/i.test(px)||/corsproxy\.io\?$/i.test(px)){
+    if(/corsproxy\.io/i.test(px)){
      fetchUrl='https://corsproxy.io/?'+encodeURIComponent(endpoint);
+    }else if(/codetabs\.com/i.test(px)){
+     fetchUrl='https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(endpoint);
     }else if(px.includes('allorigins')){
      fetchUrl=px.replace(/\/$/,'')+'/raw?url='+encodeURIComponent(endpoint);
-    }else if(px.endsWith('?')||px.includes('?url=')){
+    }else if(px.endsWith('?')||px.includes('?url=')||px.includes('?quest=')){
      fetchUrl=px+(px.endsWith('=')||px.endsWith('?')?'':'&url=')+encodeURIComponent(endpoint);
     }else{
      fetchUrl=px.replace(/\/$/,'')+'/?url='+encodeURIComponent(endpoint);
@@ -1989,7 +2007,7 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
  /* CORS / прокси: несколько вариантов для Zveno с github.io */
  if(!r.t&&/zveno\.ai|openrouter\.ai/i.test(endpoint)){
   const tried=[String(S.ai.proxy||'')];
-  const list=['https://corsproxy.io/?','https://corsproxy.org/?'];
+  const list=['https://corsproxy.io/?','https://api.codetabs.com/v1/proxy?quest=','https://corsproxy.org/?'];
   for(const px of list){
    if(tried.includes(px))continue;
    tried.push(px);
@@ -2005,7 +2023,7 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
    S.ai.proxy=saved;
   }
   if(!r.t){
-   AI_LAST_ERROR=(AI_LAST_ERROR||'Нет ответа')+' | Проверь: 1) API-ключ Zveno 2) модель openai/gpt-4o-mini 3) кнопку «Поставить corsproxy.io» 4) VPN иногда ломает прокси';
+   AI_LAST_ERROR=(AI_LAST_ERROR||'Нет ответа')+' | Проверь: 1) API-ключ 2) модель deepseek/deepseek-v4.1-flash-1017 3) прокси (corsproxy.io) 4) VPN может мешать';
   }
  }
  if(r.t)AI_LAST_ERROR='';
@@ -2226,8 +2244,7 @@ function chatRender(){
 function updChat(){
  /* старый chatbox скрываем — общий чат в доке */
  const b=$('#chatbox');if(b)b.hidden=true;
- const need=tab==='play'&&(S.ai.chat||NET.peer);
- if(need){if(S.ai.chat||NET.peer){NET.dockOpen=NET.dockOpen||0;try{netEnsureDock()}catch(e){}}}
+ try{netEnsureDock()}catch(e){}
 }
 const aiIsPlayer=()=>playersList().some(c=>(S.ctl[c]||'')==='a');
 async function sendChat(){
@@ -2280,7 +2297,7 @@ const aiSettings=()=>{
 <p class="hint">${esc(ph.hint||'')}</p>
 <label>Адрес API <small class="hint">(можно base URL — /chat/completions добавится сам)</small>
 <input type="url" data-ai="url" value="${esc(S.ai.url)}" placeholder="https://api.zveno.ai/v1" style="display:block;width:100%"></label>
-<label>Модель<input type="text" data-ai="model" value="${esc(S.ai.model)}" placeholder="openai/gpt-4o-mini" style="display:block;width:100%"></label>
+<label>Модель<input type="text" data-ai="model" value="${esc(S.ai.model)}" placeholder="deepseek/deepseek-v4.1-flash-1017" style="display:block;width:100%"></label>
 <label>API-ключ<input id="aikey" type="password" data-ai="key" value="${esc(S.ai.key)}" autocomplete="off" style="display:block;width:100%" placeholder="Bearer-ключ из кабинета провайдера"></label>
 <button data-a="aishowkey">Показать / скрыть ключ</button>
 <label>CORS-прокси <small class="hint">нужен, если с GitHub Pages/телефона API режет CORS</small>
@@ -2307,8 +2324,8 @@ const aiSettings=()=>{
 <p class="hint">Строгий + гибрид — лучший баланс. Vision шлёт PNG; нужна vision-модель. Без строгого режима человек тоже может ходить «вольными» ходами, если у кого-то включена нейросеть.</p>
 <div class="row"><button data-a="aitest" class="on">Проверить подключение</button></div>
 <p id="aistat" class="hint">Проверка шлёт короткий запрос. Итоговый URL: <code style="word-break:break-all">${esc(aiEndpoint()||'—')}</code></p>
-<p class="hint"><b>Zveno:</b> зарегистрируйся на zveno.ai → API keys → вставь ключ. Модель например <code>openai/gpt-4o-mini</code>. URL: <code>https://api.zveno.ai/v1</code>.<br>
-401 — неверный ключ. CORS с браузера часто блокирует api.zveno.ai — нажми «Поставить corsproxy.io» и снова «Проверить». URL: <code>https://api.zveno.ai/v1</code>, модель: <code>openai/gpt-4o-mini</code>. 429 — лимит.</p>`;
+<p class="hint"><b>Zveno:</b> zveno.ai → API keys → ключ. Модель по умолчанию <code>deepseek/deepseek-v4.1-flash-1017</code>. URL: <code>https://api.zveno.ai/v1</code>.<br>
+401 — неверный ключ. CORS — нажми «Поставить corsproxy.io» и «Проверить». Если не отвечает — смени VPN или попробуй без VPN. 429 — лимит.</p>`;
 };
 let bbusy=0;
 /* ===== Онлайн: комната, места, 2–4 игрока, чат (PeerJS) ===== */
@@ -2723,30 +2740,53 @@ function bindFabDrag(fab){
  const onUp=()=>{
   if(!drag)return;
   const was=moved;drag=null;
-  if(!was){NET.dockOpen=1;NET.unread=0;netEnsureDock();netPaintChat(true);layoutChatChrome()}
+  fab._dragging=0;
+  if(!was){
+   fab.classList.remove('edge-hide','edge-left','edge-right');
+   NET.dockOpen=1;NET.unread=0;netEnsureDock();netPaintChat(true);layoutChatChrome();
+   return;
+  }
+  /* магнит к ближнему краю по горизонтали */
+  const w=fab.offsetWidth,h=fab.offsetHeight;
+  const mid=(NET.fabX||0)+w/2;
+  const edge = mid < window.innerWidth/2 ? 8 : Math.max(8, window.innerWidth - w - 8);
+  const ny=Math.max(8,Math.min(window.innerHeight-h-8, NET.fabY||8));
+  fab.style.transition='left .35s cubic-bezier(.22,.9,.3,1), top .35s cubic-bezier(.22,.9,.3,1)';
+  NET.fabX=edge;NET.fabY=ny;
+  fab.style.left=edge+'px';fab.style.top=ny+'px';
+  fab.style.right='auto';fab.style.bottom='auto';
+  setTimeout(()=>{if(fab)fab.style.transition=''},400);
+  scheduleFabHide();
  };
- fab.addEventListener('pointerdown',onDown);
+ const onDown2=e=>{
+  fab._dragging=1;
+  fab.classList.remove('edge-hide','edge-left','edge-right');
+  clearTimeout(window._fabHideT);
+ };
+ fab.addEventListener('pointerdown',e=>{onDown2(e);onDown(e)});
  window.addEventListener('pointermove',onMove,{passive:false});
  window.addEventListener('pointerup',onUp);
  fab.addEventListener('touchstart',onDown,{passive:true});
  window.addEventListener('touchmove',onMove,{passive:false});
  window.addEventListener('touchend',onUp);
 }
+function scheduleFabHide(){
+ clearTimeout(window._fabHideT);
+ const fab=document.getElementById('netfab');
+ if(!fab||NET.dockOpen){if(fab)fab.classList.remove('edge-hide','edge-left','edge-right');return}
+ window._fabHideT=setTimeout(()=>{
+  const f=document.getElementById('netfab');
+  if(!f||NET.dockOpen||f._dragging)return;
+  const rect=f.getBoundingClientRect();
+  const mid=rect.left+rect.width/2;
+  const right=mid>window.innerWidth/2;
+  f.classList.add('edge-hide', right?'edge-right':'edge-left');
+ },4000);
+}
 function netEnsureDock(){
  let dock=document.getElementById('netdock');
  let fab=document.getElementById('netfab');
- const need=!!(NET.peer||(tab==='play'&&S.ai&&S.ai.chat));
- if(!need){
-  if(dock)dock.remove();
-  if(fab)fab.remove();
-  return;
- }
- if(!dock){
-  dock=document.createElement('div');
-  dock.id='netdock';
-  dock.className=NET.dockOpen?'':'collapsed';
-  document.body.appendChild(dock);
- }
+ const chatOn=!!(NET.peer||(S.ai&&S.ai.chat));
  if(!fab){
   fab=document.createElement('button');
   fab.id='netfab';
@@ -2757,9 +2797,24 @@ function netEnsureDock(){
   bindFabDrag(fab);
  }
  fab.hidden=!!NET.dockOpen;
+ if(!chatOn){
+  if(dock)dock.remove();
+  NET.dockOpen=0;
+  fab.hidden=false;
+  layoutChatChrome();
+  scheduleFabHide();
+  return;
+ }
+ if(!dock){
+  dock=document.createElement('div');
+  dock.id='netdock';
+  dock.className=NET.dockOpen?'':'collapsed';
+  document.body.appendChild(dock);
+ }
  dock.className=NET.dockOpen?'':'collapsed';
  dock.hidden=!NET.dockOpen;
  if(NET.dockOpen){
+  fab.classList.remove('edge-hide','edge-left','edge-right');
   const title=NET.peer?(NET.lobby?'Лобби + чат':'Чат комнаты'):'Чат с нейросетью';
   const focused=document.activeElement&&document.activeElement.id==='netchatin';
   const val=focused?document.activeElement.value:null;
@@ -2773,7 +2828,7 @@ function netEnsureDock(){
    const hb=dock.querySelector('.net-head b');if(hb)hb.textContent=title;
   }
   if(focused){const inp=document.getElementById('netchatin');if(inp){if(val!=null)inp.value=val;inp.focus();try{inp.setSelectionRange(val.length,val.length)}catch(e){}}}
- }
+ }else scheduleFabHide();
  layoutChatChrome();
 }
 if(!window._chatVvBound){
@@ -3083,7 +3138,16 @@ function render(){
    const moveCls=isLeg?(p?' cap':' go'):(isFree?(p?' cap-free':' go-free'):'');
    const portalBg=sp&&sp.type==='portal'?' portal-bg':'';
    const crystalBg=sp&&sp.type==='crystal'?' crystal-bg':'';
-   h+=`<b class="sq ${(r+c)%2?'d':'l'}${sel&&sel[0]==r&&sel[1]==c?' sel':''}${ks.includes(r*W+c)?' chk':''}${tab=='play'&&last&&last.some(m=>m[0]==r&&m[1]==c)?' lm':''}${moveCls}${fogCls}${spCls}${portalBg}${crystalBg}${isDuckSq?' ducksq':''}${duckPend&&!p?' duck-target':''}" data-r="${r}" data-c="${c}">${p&&!hidePiece?pc(p):''}${isDuckSq&&!fogged?'<span class="duck">🦆</span>':''}${i==H-1?`<em class="fl">${COLS_LETTERS[c]||''}</em>`:''}${j==W-1?`<em class="rk">${H-r}</em>`:''}</b>`}
+   h+=`<b class="sq ${(r+c)%2?'d':'l'}${sel&&sel[0]==r&&sel[1]==c?' sel':''}${ks.includes(r*W+c)?' chk':''}${tab=='play'&&last&&last.some(m=>m[0]==r&&m[1]==c)?' lm':''}${moveCls}${fogCls}${spCls}${portalBg}${crystalBg}${isDuckSq?' ducksq':''}${duckPend&&!p?' duck-target':''}" data-r="${r}" data-c="${c}">${p&&!hidePiece?pc(p):''}${isDuckSq&&!fogged?'<span class="duck">🦆</span>':''}${(()=>{
+    let e='';
+    if(i==H-1)e+=`<em class="fl">${COLS_LETTERS[c]||''}</em>`;
+    if(j==W-1)e+=`<em class="rk">${H-r}</em>`;
+    if(S.duo){
+      if(i==0)e+=`<em class="fl2">${COLS_LETTERS[c]||''}</em>`;
+      if(j==0)e+=`<em class="rk2">${H-r}</em>`;
+    }
+    return e;
+   })()}</b>`}
   bdEl.innerHTML=h;
   if(fogged&&tab=='play')bdEl.insertAdjacentHTML('beforeend',`<div class="fogov"><b>Передайте устройство следующему игроку</b><p class="hint" style="color:#ccc">Доска скрыта. Нажмите, когда будете готовы.</p><button data-a="fogready">Я готов — ход ${esc(colGen(turn))}</button></div>`);
  }
@@ -3228,7 +3292,7 @@ else msg('Неверный формат. Нужен 256 символов или 
 return}
  else if(a=='cp'){Ehist.push({sw:E.sw,sb:E.sb,es:E.es});const map=t=>[...t].map(c=>({'1':'4','2':'5','3':'6','4':'1','5':'2','6':'3'})[c]||c).join('');E[E.es=='w'?'sb':'sw']=map(E[E.es=='w'?'sw':'sb']);E.es=E.es=='w'?'b':'w';px();return}
  else if(a=='sv'){sv();return}
- else if(a=='del'){delete C[E.id];mkP();start.forEach(r=>r.forEach((p,i)=>{if(p&&!P[p.t])r[i]=null}));B.forEach(r=>r.forEach((p,i)=>{if(p&&!P[p.t])r[i]=null}));if(!P[tool])tool='p';E=null;save()}
+ else if(a=='del'){if(!confirm(STD[E.id]?'Сбросить стандартную фигуру к исходной?':'Удалить фигуру «'+(E.name||E.id)+'»?'))return;delete C[E.id];mkP();start.forEach(r=>r.forEach((p,i)=>{if(p&&!P[p.t])r[i]=null}));B.forEach(r=>r.forEach((p,i)=>{if(p&&!P[p.t])r[i]=null}));if(!P[tool])tool='p';E=null;save()}
  else if(a=='fogready'){fogged=0;fogReady=1;render();return}
  else if(a=='drop'){startDrop(v);return}
  else if(a=='dropx'){dropSel=null;mv=[];render();return}
