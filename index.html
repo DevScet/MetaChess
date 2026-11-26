@@ -4,13 +4,13 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.17</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
+<title>MetaChess v2.18</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,700&family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme=light]{color-scheme:light;--bg:#e8eef8;--fg:#0f172a;--card:rgba(255,255,255,.9);--l:#c7d2fe;--d:#64748b;--sel:#0ea5e9;--go:#059669;--acc:#4f46e5;--acc2:#7c3aed;--line:rgba(79,70,229,.2);--glow:rgba(79,70,229,.25)}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 96px)}
-body{margin:0;color:var(--fg);font:500 16px/1.45 Manrope,system-ui,sans-serif;
+body{margin:0;color:var(--fg);font:500 16px/1.45 "DM Sans",system-ui,sans-serif;
  background:
   radial-gradient(ellipse 120% 80% at 10% -10%, rgba(99,102,241,.35) 0%, transparent 50%),
   radial-gradient(ellipse 90% 60% at 100% 0%, rgba(167,139,250,.22) 0%, transparent 45%),
@@ -31,8 +31,8 @@ h1 small{background:none;-webkit-background-clip:unset;background-clip:unset;col
 #topbar{position:sticky;top:0;z-index:50;padding:10px 12px 8px;margin:0;
  background:rgba(7,11,22,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
  border-bottom:1px solid var(--line);box-shadow:0 8px 28px rgba(0,0,0,.35)}
-#topbar h1{margin:0 0 8px;font-size:20px}
-#topbar #tabs{margin:0}
+#topbar h1{margin:0 0 8px;font-size:20px;font-family:Manrope,system-ui,sans-serif}
+#topbar #tabs{margin:0;font-family:Manrope,system-ui,sans-serif}
 main{max-width:560px;margin:auto;padding:10px 14px 40px;position:relative}
 #bdwrap{width:100%;display:flex;justify-content:center;align-items:flex-start;
  padding:4px max(12px, env(safe-area-inset-left)) 8px max(12px, env(safe-area-inset-right));
@@ -111,6 +111,27 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
 .l em{color:rgba(255,255,255,.92)}.d em{color:rgba(255,255,255,.88)}
 .sq .pc{z-index:1}
 #bd{box-shadow:0 0 0 1px rgba(148,163,255,.18),0 12px 40px rgba(0,0,0,.45),inset 0 0 40px rgba(0,0,0,.12)}
+
+/* board depth (DeepSeek-inspired) */
+.sq{border:1px solid rgba(255,255,255,.04);box-shadow:inset 0 1px 2px rgba(255,255,255,.04),inset 0 -1px 2px rgba(0,0,0,.12)}
+#bd{position:relative;border-radius:12px;overflow:hidden;
+ box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 24px rgba(139,92,246,.12),0 0 0 1px rgba(148,163,255,.2)}
+#bd::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+ background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(0,0,0,.22) 100%);border-radius:inherit}
+.sq em{font-weight:600!important;font-size:9px!important;letter-spacing:.02em;
+ color:color-mix(in srgb,var(--acc) 55%,#fff)!important;
+ text-shadow:0 0 4px color-mix(in srgb,var(--acc) 40%,transparent),0 1px 2px rgba(0,0,0,.75)!important;
+ opacity:.9}
+.pc img{filter:drop-shadow(0 2px 3px rgba(0,0,0,.55));transition:filter .15s,transform .15s}
+.pc.w img,.pc.y img{filter:drop-shadow(0 0 2.5px rgba(167,139,250,.45)) drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.pc.b img,.pc.g img,.pc.r img{filter:drop-shadow(0 0 2.5px rgba(96,165,250,.35)) drop-shadow(0 2px 4px rgba(0,0,0,.75))}
+.sel .pc img{filter:drop-shadow(0 0 6px rgba(125,211,252,.7)) drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:piecePulse 1.4s ease-in-out infinite}
+@keyframes piecePulse{0%,100%{filter:drop-shadow(0 0 4px rgba(125,211,252,.5)) drop-shadow(0 2px 4px rgba(0,0,0,.5))}50%{filter:drop-shadow(0 0 9px rgba(167,139,250,.85)) drop-shadow(0 2px 4px rgba(0,0,0,.5))}}
+#netdock .net-x{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+ border-radius:8px;background:rgba(0,0,0,.28);font-size:14px;font-weight:700;line-height:1;
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);flex-shrink:0}
+#netdock .net-x:hover{background:rgba(0,0,0,.42)}
+
 .lm{background-image:linear-gradient(rgba(240,200,30,.5),rgba(240,200,30,.5))}
 .chk{background-image:radial-gradient(circle,#ff2a2a 0%,rgba(230,20,20,.7) 40%,rgba(230,20,20,0) 75%)}
 .sel{box-shadow:inset 0 0 0 3px var(--sel);z-index:2}
@@ -248,15 +269,16 @@ input[type=color].swatch::-moz-color-swatch{border:none;border-radius:10px}
 .swatch-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .swatch-wrap .sw-lab{font-size:11px;opacity:.7;margin:0 2px 0 4px}
 
-.mini-bd{width:36px;height:36px;display:inline-grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1.5px;
- padding:3px;border-radius:8px;background:rgba(148,163,255,.12);flex-shrink:0;box-sizing:border-box;
- box-shadow:0 0 0 1px rgba(148,163,255,.25)}
-.mini-bd i{display:block;border-radius:2px}
+.mini-bd{width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important;
+ display:inline-grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;
+ padding:3px;border-radius:8px;background:rgba(148,163,255,.12);flex:0 0 36px!important;box-sizing:border-box;
+ box-shadow:0 0 0 1px rgba(148,163,255,.25);aspect-ratio:1/1;overflow:hidden}
+.mini-bd i{display:block;border-radius:2px;min-width:0;min-height:0;aspect-ratio:1/1}
 .mini-bd i:nth-child(1),.mini-bd i:nth-child(4){background:var(--l)}
 .mini-bd i:nth-child(2),.mini-bd i:nth-child(3){background:var(--d)}
-#netfab.edge-hide{opacity:.45}
-#netfab.edge-hide.edge-right{transform:translateX(50%)}
-#netfab.edge-hide.edge-left{transform:translateX(-50%)}
+#netfab.edge-hide{opacity:.4}
+#netfab.edge-hide.edge-right{transform:translateX(62%)}
+#netfab.edge-hide.edge-left{transform:translateX(-62%)}
 #netfab{transition:left .35s cubic-bezier(.22,.9,.3,1),opacity .35s ease,transform .35s cubic-bezier(.22,.9,.3,1),box-shadow .15s}
 
 
@@ -446,8 +468,8 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <header id="topbar">
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.17</small></h1>
-<div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-1.4 0-2.6.9-3.1 2.2L7.5 9.5h9L15.1 5.2C14.6 3.9 13.4 3 12 3zm-4.2 8l.8 9h6.8l.8-9H7.8z"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.61 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.73 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.22l2.39-.96c.5.39 1.04.71 1.63.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.25.12.54.02.68-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button></div>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.18</small></h1>
+<div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2a2.8 2.8 0 0 0-.9 5.45c-1.15.45-2 1.55-2.15 2.85h6.1c-.15-1.3-1-2.4-2.15-2.85A2.8 2.8 0 0 0 12 3.2zM9.2 12.2l-.7 2.3h7l-.7-2.3H9.2zm-.9 3.5L7.2 20.5h9.6l-1.1-4.8H8.3z"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.61 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.73 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.22l2.39-.96c.5.39 1.04.71 1.63.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.25.12.54.02.68-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button></div>
 </header>
 <main>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="cap"></div>
@@ -460,7 +482,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 const $=s=>document.querySelector(s),gcd=(a,b)=>b?gcd(b,a%b):a,esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),clone=b=>JSON.parse(JSON.stringify(b));
 const O=[[1,0],[-1,0],[0,1],[0,-1]],D=[[1,1],[1,-1],[-1,1],[-1,-1]],ray=(v,n)=>v.map(a=>[...a,n]);
 const PAL=['#101018','#ffffff','#e3dfd3','#aaa597','#7a7a90','#4a4a60','#2c2c3c','#d93b3b','#f0892d','#f2d14b','#5cc25a','#4cc3e8','#3a6fd8','#7a4fd1','#e86fb0','#8a5a35'];
-const BP=[['#93c5fd','#1e3a5f'],['#fdba74','#7c2d12'],['#6ee7b7','#065f46'],['#c4b5fd','#3b0764'],['#fda4af','#881337']],BL='.'.repeat(256),E16='.'.repeat(16);
+const BP=[['#b8895c','#5c2a0e'],['#8b7ab8','#2a0848'],['#3d9a6a','#043d2e'],['#5a8ab0','#152a48'],['#b86a78','#5c1020']],BL='.'.repeat(256),E16='.'.repeat(16);
 const R=a=>['........','........',...a,'........'],mir=r=>r+[...r].reverse().join('');
 const ART={
 k:R(['.......f','.....fff','.....fff','.......f','....ffff','...fffff','...fffff','...fffff','....ffff','..oooooo','...fffff','..ffffff','..ffffff']).map(mir),
@@ -1451,6 +1473,21 @@ function delPosition(id){
  delete S.positions[id];save();render();
 }
 
+function editPosition(id){
+ ensurePositions();
+ const p=S.positions[id];if(!p)return;
+ const n=prompt('Название позиции', p.name||'');
+ if(n===null)return;
+ if(n.trim())p.name=n.trim().slice(0,40);
+ if(confirm('Заменить содержимое позиции текущей расстановкой на доске?\n(Отмена — только переименовать)')){
+  p.data=pack();
+  p.blurb=BW()+'×'+BH()+', '+playersList().map(colName).join('/');
+  p.when=Date.now();
+ }
+ save();render();
+}
+
+
 /* редактор фигур */
 const fromM=m=>{const g={};(m||[]).forEach(([x,y,n])=>g[x+','+y]=n==1?1:2);return g},toM=g=>Object.entries(g).map(([k,v])=>[...k.split(',').map(Number),v==1?1:0]);
 const edit=id=>{Ehist=[];GRV=mkGRV();const d=id?P[id]:{},e=d.ev||{},rg=d.regen||{};E={id:id||'c'+Date.now().toString(36),name:d.name||'',sw:d.sw||BL,sb:d.sb||BL,es:'w',col:'0',sy:0,g:fromM(d.m),h:fromM(d.cm),tl:'pen',f:(id&&C[id]&&C[id].f)||(S.pf!='std'?S.pf:'mine'),sep:d.cm?1:0,val:d.val===undefined?1:d.val,jump:d.jump||0,jumpOwn:d.jumpOwn||0,pw:d.pw||0,royal:d.royal||0,ability:d.ability||'none',fixed:d.fixed||0,immortal:d.immortal||0,lives:d.lives||0,rookish:d.rookish||0,sitEat:d.sitEat||0,regenMode:rg.mode||'none',regenCaps:rg.caps||0,regenMoves:rg.moves||0,regenPts:rg.pts||0,grR:3,when:e.when||'',do:e.do||'to',to:e.to||'q'}};
@@ -1659,7 +1696,7 @@ const CN={h:'Человек',s:'Сложный бот',p:'Простой бот'
 const ctlName=c=>CN[c];
 const modeName=()=>{const k=PRESETS.find(([n,c])=>c.w==S.ctl.w&&c.b==S.ctl.b);return k?k[0]:'Свой'};
 const soundRow=()=>`<div class="row" style="flex-wrap:wrap">${[['m','Ход'],['c','Взятие'],['k','Шах'],['e','Конец']].map(([k,l])=>`<label style="display:flex;align-items:center;gap:6px;margin:0">${l}<select data-sv="${k}" style="width:auto">${Object.keys(SETS).map(x=>`<option value="${x}" ${S.sv[k]==x?'selected':''}>${SN[x]}</option>`).join('')}</select></label>`).join('')}</div>`;
-const UIC=[['Синий','#2f5d8a'],['Зелёный','#2e7d5b'],['Фиолетовый','#6a3fd4'],['Оранжевый','#c8642a'],['Красный','#b03a3a']];
+const UIC=[['Зелёный','#2e7d5b'],['Фиолетовый','#6a3fd4'],['Синий','#2f5d8a'],['Оранжевый','#c8642a'],['Красный','#b03a3a']];
 const ICO_PLAY='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M7 4.8v14.4c0 .9 1 1.4 1.7.9l11.2-7.2c.7-.4.7-1.4 0-1.8L8.7 3.9C8 3.4 7 3.9 7 4.8z"/></svg>';
 const ICO_PAUSE='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="5.5" y="4" width="4.8" height="16" rx="1.4" fill="currentColor"/><rect x="13.7" y="4" width="4.8" height="16" rx="1.4" fill="currentColor"/></svg>';
 const NAV=()=>`<div class="row nv"><button data-a="nav" data-v="first" title="В начало">⏮</button><button data-a="nav" data-v="prev" title="Назад">◀</button><button data-a="pause" class="ico-btn ${S.paused?'on':''}" ${playersList().some(c=>(S.ctl[c]||'h')!='h')?'':'disabled'} title="${S.paused?'Продолжить ботов/нейросеть':'Пауза ботов/нейросети'}">${S.paused?ICO_PLAY:ICO_PAUSE}</button><button data-a="nav" data-v="next" title="Вперёд">▶</button><button data-a="nav" data-v="last" title="В конец">⏭</button><button data-a="undo" title="Отменить ход">↶</button></div>
@@ -1714,7 +1751,7 @@ ${S.pf!='std'?`<div class="row"><button data-a="add" class="on">Новая фи�
 <div class="row"><button data-a="pki">Загрузить из поля (в новую папку)</button></div>
 ${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span class="mini-bd" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span title="${esc(b.name)}">${esc(b.name)}</span><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Ссылка</button><button data-a="delboard" data-v="${b.id}">Удалить</button></div></div>`).join(''):''}
 `+inFolder(S.pf).map(k=>`<div class="li">${pc({t:k,c:'w'})}${pc({t:k,c:'b'})}<span title="${esc(P[k].name)}">${esc(P[k].name)}</span><div class="row" style="margin:0;flex:1 1 auto;justify-content:flex-end;gap:6px"><button data-a="ed" data-v="${k}">Изменить</button>${C[k]&&!STD[k]?`<button data-a="shp" data-v="${k}">Поделиться</button>`:''}</div></div>`).join('')
-+(ensurePositions(),'')+(()=>{const pos=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);return pos.length?`<h4>Позиции</h4>`+pos.map(p=>`<div class="li"><span>📌 ${esc(p.name)}</span><small class="hint">${esc(p.blurb||'')}</small><button data-a="loadpos" data-v="${p.id}">Загрузить</button><button data-a="delpos" data-v="${p.id}">Удалить</button></div>`).join(''):`<p class="hint">Позиций в этой папке нет. Сохрани из игры кнопкой «Сохранить позицию в папку».</p>`})()
++(ensurePositions(),'')+(()=>{const pos=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);return pos.length?`<h4>Позиции</h4>`+pos.map(p=>`<div class="li"><span>📌 ${esc(p.name)}</span><small class="hint">${esc(p.blurb||'')}</small><button data-a="loadpos" data-v="${p.id}">Загрузить</button><button data-a="editpos" data-v="${p.id}">Изменить</button><button data-a="delpos" data-v="${p.id}">Удалить</button></div>`).join(''):`<p class="hint">Позиций в этой папке нет. Сохрани из игры кнопкой «Сохранить позицию в папку».</p>`})()
 },
 boards:()=>{
  ensureBoards();
@@ -2815,11 +2852,11 @@ function netEnsureDock(){
  dock.hidden=!NET.dockOpen;
  if(NET.dockOpen){
   fab.classList.remove('edge-hide','edge-left','edge-right');
-  const title=NET.peer?(NET.lobby?'Лобби + чат':'Чат комнаты'):'Чат с нейросетью';
+  const title=NET.peer?(NET.lobby?'Лобби':'Чат'):'Чат';
   const focused=document.activeElement&&document.activeElement.id==='netchatin';
   const val=focused?document.activeElement.value:null;
   if(!document.getElementById('netchatlog')||!document.getElementById('netchatin')){
-   dock.innerHTML=`<div class="net-head" data-a="netdockmin"><b>${esc(title)}</b><span class="net-st" style="opacity:.85;font-size:12px">${esc(NET.status||'')}</span><span>▼</span></div>
+   dock.innerHTML=`<div class="net-head" data-a="netdockmin"><b>${esc(title)}</b><span class="net-st" style="opacity:.85;font-size:12px">${esc(NET.status||'')}</span><span class="net-x" title="Закрыть">✕</span></div>
 <div class="net-body" id="netchatlog"></div>
 <div class="net-input"><input id="netchatin" type="text" maxlength="300" placeholder="Сообщение игрокам и нейросети…" autocomplete="off" enterkeyhint="send"><button type="button" data-a="netchatsend" title="Отправить">➤</button></div>`;
    netPaintChat(true);
@@ -3212,6 +3249,7 @@ document.addEventListener('click',e=>{
  else if(a=='savepos'){savePositionToFolder();return}
  else if(a=='loadpos'){loadPosition(v);return}
  else if(a=='delpos'){delPosition(v);return}
+ else if(a=='editpos'){editPosition(v);return}
  else if(a=='analyze'){runAnalysis();return}
  else if(a=='send'){sendChat();return}
  else if(a=='avclear'){if(v==='me'){S.avMe=null;S.avMeEmoji=null}else{S.avAI=null;S.avAIEmoji=null}save();render();return}
