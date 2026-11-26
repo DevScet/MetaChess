@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.13</title>
+<title>MetaChess v2.14</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -76,14 +76,19 @@ button[data-a="undo"],button[data-a="sundo"],button[data-a="eundo"]{border-radiu
 #netfab .badge{position:absolute;top:-3px;right:-3px;background:#e11d48;color:#fff;font-size:11px;font-weight:800;
  min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;
  box-shadow:0 2px 6px rgba(0,0,0,.35)}
-#netdock{position:fixed;right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));
+#netdock{position:fixed;right:max(10px,env(safe-area-inset-right));left:auto;
+ bottom:max(10px,env(safe-area-inset-bottom));
  z-index:46;width:min(360px,calc(100vw - 20px));
- max-height:min(48dvh,380px);display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
+ height:min(42dvh,360px);max-height:min(42dvh,360px);
+ display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
  background:rgba(12,18,36,.94);border:1px solid rgba(148,163,255,.3);
  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 40px rgba(99,102,241,.15);backdrop-filter:blur(16px);
  font-size:14px;
- transition:bottom .2s ease-out,max-height .2s ease-out,opacity .15s ease}
-#netdock.kb{/* keyboard open — max-height set inline */}
+ transition:bottom .28s cubic-bezier(.22,.9,.3,1), height .28s cubic-bezier(.22,.9,.3,1), max-height .28s cubic-bezier(.22,.9,.3,1);
+ will-change:bottom,height,max-height}
+#netdock .net-head{flex:0 0 auto}
+#netdock .net-body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#netdock .net-input{flex:0 0 auto;flex-shrink:0!important}
 
 button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
 .on{background:var(--acc);border-color:var(--acc);color:#fff}
@@ -167,9 +172,15 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
     radial-gradient(ellipse at 50% 50%, rgba(40,55,75,.15) 0%, rgba(10,16,24,.55) 100%)!important;
 }
 .pals{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin:10px 0}
-.pal{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px}
-.pal .pc,.li .pc{width:44px;height:44px}
-.li{display:flex;align-items:center;gap:8px;margin:8px 0}.li span{flex:1;margin-left:4px}
+.pal{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;min-width:0;overflow:hidden}
+.pal small{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:11px;line-height:1.2}
+.pal .pc,.li .pc{width:44px;height:44px;flex-shrink:0}
+.li{display:flex;align-items:center;gap:6px;margin:8px 0;flex-wrap:wrap;min-width:0}
+.li span{flex:1 1 80px;margin-left:4px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .row, .li > button{flex:0 0 auto}
+.board-list .li, .pack-card .li{max-width:100%}
+.board-list button, .li button{max-width:100%;box-sizing:border-box}
+
 .grid{display:grid;grid-template-columns:repeat(7,22px);grid-auto-rows:22px;gap:2px;width:max-content;margin:10px auto;justify-content:center}
 .grid.moves{
  display:grid!important;
@@ -270,16 +281,16 @@ input[type=password]{font:inherit;padding:8px;border-radius:8px;border:1px solid
 #netdock.collapsed .net-body,#netdock.collapsed .net-input{display:none}
 #netdock .net-head{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--acc);color:#fff;cursor:pointer;user-select:none}
 #netdock .net-head b{flex:1;font-size:14px}
-#netdock .net-body{flex:1;overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:6px;
- min-height:120px;max-height:min(38vh,300px);-webkit-overflow-scrolling:touch;background:var(--bg)}
+#netdock .net-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:6px;
+ -webkit-overflow-scrolling:touch;background:var(--bg)}
 #netdock .nb{max-width:82%;padding:8px 12px;border-radius:16px 16px 16px 4px;background:var(--l);color:var(--fg);
  align-self:flex-start;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 #netdock .nb.me{align-self:flex-end;background:var(--acc);color:#fff;border-radius:16px 16px 4px 16px}
 #netdock .nb.sys{align-self:center;background:transparent;color:var(--fg);opacity:.65;font-size:12px;max-width:94%;text-align:center;box-shadow:none;padding:4px}
 #netdock .nb .nm{display:block;font-size:11px;font-weight:800;opacity:.75;margin-bottom:2px}
 #netdock .nb.me .nm{color:rgba(255,255,255,.85)}
-#netdock .net-input{display:flex;gap:6px;padding:8px;border-top:1px solid var(--line);background:var(--card);align-items:center}
-#netdock .net-input input{flex:1;min-width:0;border-radius:20px;padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit}
+#netdock .net-input{display:flex;gap:6px;padding:8px;border-top:1px solid var(--line);background:var(--card);align-items:center;flex:0 0 auto;flex-shrink:0}
+#netdock .net-input input{flex:1;min-width:0;border-radius:20px;padding:10px 14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit;font-size:16px}
 #netdock .net-input button{border-radius:50%;width:40px;height:40px;padding:0;border:none;background:var(--acc);color:#fff;font-size:18px;flex-shrink:0}
 #netfab{/* base overridden above */}
 #netfab .badge{position:absolute;top:-2px;right:-2px;background:#e74c3c;color:#fff;font-size:11px;font-weight:800;
@@ -355,7 +366,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <header id="topbar">
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.13</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.14</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 </header>
 <main>
@@ -1565,8 +1576,8 @@ pieces:()=>{
 ${S.pf!='std'?`<div class="row"><button data-a="add" class="on">Новая фигура</button><button data-a="rf">Переименовать</button>${S.pf!='mine'?'<button data-a="df">Удалить папку</button>':''}<button data-a="shf">Поделиться папкой</button></div>`:'<p class="hint">Стандартные фигуры можно изменить, но не удалить. Доски хранятся в пользовательских папках.</p>'}
 <textarea id="shr" rows="3" style="width:100%" placeholder="Код папки, фигуры или доски. Вставь и нажми «Загрузить».">${SHR}</textarea>
 <div class="row"><button data-a="pki">Загрузить из поля (в новую папку)</button></div>
-${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span style="width:44px;text-align:center;font-size:22px">◫</span><span>${esc(b.name)}</span><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Ссылка</button><button data-a="delboard" data-v="${b.id}">Удалить</button></div>`).join(''):''}
-`+inFolder(S.pf).map(k=>`<div class="li">${pc({t:k,c:'w'})}${pc({t:k,c:'b'})}<span>${esc(P[k].name)}</span><button data-a="ed" data-v="${k}">Изменить</button>${C[k]&&!STD[k]?`<button data-a="shp" data-v="${k}">Поделиться</button>`:''}</div>`).join('')
+${S.pf!='std'&&boardsInFolder.length?`<p class="hint" style="margin-top:12px"><b>Доски в этой папке</b></p>`+boardsInFolder.map(b=>`<div class="li"><span style="width:44px;text-align:center;font-size:22px;flex-shrink:0">◫</span><span title="${esc(b.name)}">${esc(b.name)}</span><div class="row" style="margin:0;flex:1 1 100%;justify-content:flex-end"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="shareboard" data-v="${b.id}">Ссылка</button><button data-a="delboard" data-v="${b.id}">Удалить</button></div></div>`).join(''):''}
+`+inFolder(S.pf).map(k=>`<div class="li">${pc({t:k,c:'w'})}${pc({t:k,c:'b'})}<span title="${esc(P[k].name)}">${esc(P[k].name)}</span><div class="row" style="margin:0;flex:1 1 auto;justify-content:flex-end;gap:6px"><button data-a="ed" data-v="${k}">Изменить</button>${C[k]&&!STD[k]?`<button data-a="shp" data-v="${k}">Поделиться</button>`:''}</div></div>`).join('')
 +(ensurePositions(),'')+(()=>{const pos=Object.values(S.positions||{}).filter(p=>(p.f||'mine')===S.pf);return pos.length?`<h4>Позиции</h4>`+pos.map(p=>`<div class="li"><span>📌 ${esc(p.name)}</span><small class="hint">${esc(p.blurb||'')}</small><button data-a="loadpos" data-v="${p.id}">Загрузить</button><button data-a="delpos" data-v="${p.id}">Удалить</button></div>`).join(''):`<p class="hint">Позиций в этой папке нет. Сохрани из игры кнопкой «Сохранить позицию в папку».</p>`})()
 },
 boards:()=>{
@@ -1584,7 +1595,7 @@ boards:()=>{
 ${userList.length?`<p class="hint" style="margin-top:10px"><b>Мои доски</b></p>`:''}
 ${userList.map(b=>`<div class="mode-card"><h4>${esc(b.name)} ${b.id===S.curBoard?'★':''}</h4>
 <p>${esc(b.notes||'Пользовательская')} · ${b.w||8}×${b.h||8} · игроков: ${b.players||2} · папка: ${esc(folderName(b.f||'mine'))}</p>
-<div class="row"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="edboard" data-v="${b.id}">Изменить</button><button data-a="shareboard" data-v="${b.id}">Код</button><button data-a="delboard" data-v="${b.id}">Удалить</button>
+<div class="row" style="flex-wrap:wrap;width:100%"><button data-a="loadboard" data-v="${b.id}">Загрузить</button><button data-a="edboard" data-v="${b.id}">Изменить</button><button data-a="shareboard" data-v="${b.id}">Код</button><button data-a="delboard" data-v="${b.id}">Удалить</button>
 <select data-boardf="${b.id}" style="width:auto;max-width:140px">${folders().filter(f=>f.id!=='std').map(f=>`<option value="${f.id}" ${(b.f||'mine')===f.id?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div></div>`).join('')}
 <textarea id="bshr" rows="2" style="width:100%" placeholder="Код доски (bd1:…)"></textarea>
 <div class="row"><button data-a="impboard">Импорт доски</button></div>
@@ -2527,16 +2538,32 @@ function kbInset(){
  }catch(e){return 0}
 }
 function layoutChatChrome(){
- const kb=kbInset();
- const bottom=Math.max(10, kb + 8);
  const dock=document.getElementById('netdock');
  const fab=document.getElementById('netfab');
+ let vvH=window.innerHeight, vvTop=0, kb=0;
+ try{
+  const vv=window.visualViewport;
+  if(vv){
+   vvH=vv.height;
+   vvTop=vv.offsetTop||0;
+   kb=Math.max(0, window.innerHeight - vv.height - vvTop);
+  }
+ }catch(e){}
+ const safeBottom=Math.max(8, kb + 8);
+ /* панель едет вверх вместе с клавиатурой; высота = доля видимой области, поле ввода не сжимаем */
  if(dock&&NET.dockOpen){
-  dock.style.bottom=bottom+'px';
-  const maxH=Math.max(160, Math.min(window.innerHeight - kb - 72, window.innerHeight*0.48));
-  dock.style.maxHeight=maxH+'px';
+  const headH=48, inputH=58, pad=16;
+  const want=Math.min(360, Math.floor(vvH * 0.42));
+  const h=Math.max(headH+inputH+48, Math.min(want, Math.floor(vvH - pad)));
+  dock.style.bottom=safeBottom+'px';
+  dock.style.height=h+'px';
+  dock.style.maxHeight=h+'px';
   const body=document.getElementById('netchatlog');
-  if(body)body.style.maxHeight=Math.max(80, maxH-110)+'px';
+  if(body){
+   body.style.maxHeight=''; /* flex режет сам */
+   body.style.flex='1 1 auto';
+   body.style.minHeight='0';
+  }
  }
  if(fab&&!NET.dockOpen){
   if(NET.fabX!=null&&NET.fabY!=null){
@@ -2547,7 +2574,8 @@ function layoutChatChrome(){
   }else{
    fab.style.left='';fab.style.top='';
    fab.style.right='';
-   fab.style.bottom=bottom+'px';
+   fab.style.bottom=safeBottom+'px';
+   fab.style.transition='bottom .28s cubic-bezier(.22,.9,.3,1)';
   }
  }
 }
