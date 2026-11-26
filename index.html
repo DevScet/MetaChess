@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.15</title>
+<title>MetaChess v2.16</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -243,6 +243,51 @@ input[type=color].swatch::-moz-color-swatch{border:none;border-radius:10px}
 .swatch-wrap{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .swatch-wrap .sw-lab{font-size:11px;opacity:.7;margin:0 2px 0 4px}
 
+/* color picker popover */
+#colorpop{
+ position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;
+ background:rgba(4,8,18,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+ padding:16px;box-sizing:border-box}
+#colorpop .cp-sheet{
+ width:min(360px,100%);background:rgba(12,18,36,.96);border:1px solid rgba(148,163,255,.35);
+ border-radius:18px 18px 14px 14px;padding:16px 16px 18px;box-shadow:0 20px 50px rgba(0,0,0,.5),0 0 40px rgba(99,102,241,.2);
+ animation:cpIn .22s ease-out}
+@keyframes cpIn{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+#colorpop .cp-title{font-weight:800;font-size:16px;margin:0 0 12px;letter-spacing:.02em}
+#colorpop .cp-row{display:flex;align-items:center;gap:12px;margin:10px 0}
+#colorpop .cp-row label{flex:1;font-size:14px;opacity:.9}
+#colorpop .cp-row input[type=color]{
+ -webkit-appearance:none;appearance:none;width:48px;height:48px;border:none;border-radius:14px;padding:0;cursor:pointer;
+ box-shadow:0 0 0 2px rgba(148,163,255,.35),0 4px 14px rgba(0,0,0,.3);background:transparent;overflow:hidden}
+#colorpop .cp-row input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+#colorpop .cp-row input[type=color]::-webkit-color-swatch{border:none;border-radius:12px}
+#colorpop .cp-actions{display:flex;gap:8px;margin-top:14px}
+#colorpop .cp-actions button{flex:1;font-weight:800}
+#colorpop .cp-preview{width:56px;height:56px;border-radius:12px;overflow:hidden;flex-shrink:0;
+ box-shadow:0 0 0 2px rgba(148,163,255,.3);background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat}
+.bp-edit{position:relative}
+.bp-edit .bp-pen{
+ position:absolute;right:2px;bottom:2px;width:16px;height:16px;border-radius:6px;
+ background:rgba(8,12,24,.85);display:flex;align-items:center;justify-content:center;
+ box-shadow:0 1px 4px rgba(0,0,0,.45);pointer-events:none}
+.bp-edit .bp-pen svg{width:11px;height:11px;display:block;color:#e8eef8}
+.tab-board{
+ width:20px;height:20px;display:inline-grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);
+ gap:2px;padding:2px;border-radius:5px;background:rgba(148,163,255,.15);position:relative;
+ box-sizing:border-box;vertical-align:middle}
+.tab-board i{display:block;border-radius:1px;background:currentColor;opacity:.55}
+.tab-board i:nth-child(odd){opacity:.9}
+.tab-board .tb-badge{
+ position:absolute;right:-4px;bottom:-4px;width:12px;height:12px;border-radius:50%;
+ background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;
+ display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;line-height:1;
+ box-shadow:0 1px 4px rgba(0,0,0,.4);border:1.5px solid rgba(12,18,36,.9)}
+#tabs button.on .tab-board{background:rgba(255,255,255,.18)}
+#tabs button.on .tab-board .tb-badge{border-color:rgba(255,255,255,.35)}
+#tabs button{display:flex;align-items:center;justify-content:center;min-height:40px}
+#tabs button svg.tab-ico{width:22px;height:22px;display:block}
+
+
 input[type=text],select,textarea{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);max-width:100%;box-sizing:border-box}
 label{display:block;margin:10px 0}
 select{width:100%;margin:4px 0}
@@ -384,8 +429,8 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <header id="topbar">
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.15</small></h1>
-<div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.16</small></h1>
+<div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19c1.2-3.2 3.4-4.8 6.5-4.8s5.3 1.6 6.5 4.8"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5l5 5M4 20l1.2-4.2L15.5 5.5l3 3L8.2 18.8 4 20z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6.2 6.2l1.6 1.6M16.2 16.2l1.6 1.6M17.8 6.2l-1.6 1.6M7.8 16.2l-1.6 1.6"/></svg></button></div>
 </header>
 <main>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="cap"></div>
@@ -518,6 +563,45 @@ const pc=p=>{
  return `<i class="pc ${p.c}">${badge}<img draggable="false" src="${url(spr(p.t,p.c),tintKey)}" alt=""></i>`;
 };
 const theme=()=>[['l','l'],['d','d'],['acc','ui']].forEach(([v,k])=>S[k]?document.documentElement.style.setProperty('--'+v,S[k]):document.documentElement.style.removeProperty('--'+v));
+
+function closeColorPop(){const el=document.getElementById('colorpop');if(el)el.remove()}
+function openBoardColorPop(){
+ closeColorPop();
+ const L=S.l||'#3d5a80',D=S.d||'#1a2744';
+ const pop=document.createElement('div');pop.id='colorpop';
+ pop.innerHTML=`<div class="cp-sheet" role="dialog" aria-label="Цвет доски">
+  <div class="cp-title">Цвет доски</div>
+  <div class="cp-row">
+   <div class="cp-preview" id="cpprev" style="background-image:linear-gradient(${L},${L}),linear-gradient(${D},${D}),linear-gradient(${D},${D}),linear-gradient(${L},${L})"></div>
+   <div style="flex:1">
+    <div class="cp-row" style="margin:0 0 8px"><label>Светлые клетки</label><input type="color" id="cpl" value="${L}"></div>
+    <div class="cp-row" style="margin:0"><label>Тёмные клетки</label><input type="color" id="cpd" value="${D}"></div>
+   </div>
+  </div>
+  <div class="cp-actions"><button type="button" data-a="cpcancel">Отмена</button><button type="button" class="on" data-a="cpok">Готово</button></div>
+ </div>`;
+ document.body.appendChild(pop);
+ const prev=()=>{const l=document.getElementById('cpl').value,d=document.getElementById('cpd').value;
+  const p=document.getElementById('cpprev');if(p)p.style.backgroundImage=`linear-gradient(${l},${l}),linear-gradient(${d},${d}),linear-gradient(${d},${d}),linear-gradient(${l},${l})`};
+ document.getElementById('cpl').oninput=prev;document.getElementById('cpd').oninput=prev;
+ pop.addEventListener('click',e=>{if(e.target===pop)closeColorPop()});
+}
+function openUiColorPop(){
+ closeColorPop();
+ const C=S.ui||'#6366f1';
+ const pop=document.createElement('div');pop.id='colorpop';
+ pop.innerHTML=`<div class="cp-sheet" role="dialog" aria-label="Цвет интерфейса">
+  <div class="cp-title">Цвет интерфейса</div>
+  <div class="cp-row">
+   <input type="color" id="cpu" value="${C}" style="width:64px;height:64px;border-radius:16px">
+   <label style="flex:1">Выбери акцент интерфейса — кнопки, вкладки, подсветка</label>
+  </div>
+  <div class="cp-actions"><button type="button" data-a="cpcancel">Отмена</button><button type="button" class="on" data-a="cpokui">Готово</button></div>
+ </div>`;
+ document.body.appendChild(pop);
+ pop.addEventListener('click',e=>{if(e.target===pop)closeColorPop()});
+}
+
 let AC;
 const SETS={classic:{m:[220,.09,'triangle'],c:[170,.1,'square'],k:[520,.1,'square'],e:[330,.2,'triangle']},wood:{m:[300,.05,'sine'],c:[150,.08,'triangle'],k:[600,.07,'sine'],e:[200,.3,'sine']},soft:{m:[260,.2,'sine'],c:[200,.25,'sine'],k:[400,.3,'sine'],e:[180,.6,'sine']},digital:{m:[880,.04,'square'],c:[440,.06,'square'],k:[1320,.05,'square'],e:[660,.2,'square']}};
 const SN={classic:'Классика',wood:'Дерево',soft:'Мягкий',digital:'Цифровой'};
@@ -1573,17 +1657,18 @@ ${soundRow()}
   const sel=(S.l===l&&S.d===d)?' on':'';
   return `<button data-a="bp" data-v="${i}" class="bp bp-check${sel}" title="Пресет ${i+1}" style="background-image:linear-gradient(${l},${l}),linear-gradient(${d},${d}),linear-gradient(${d},${d}),linear-gradient(${l},${l});background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat"></button>`;
 }).join('')}
-<span class="sw-lab">Светлая</span>
-<input type="color" class="swatch" data-c="l" value="${S.l||'#3d5a80'}" title="Светлые клетки">
-<span class="sw-lab">Тёмная</span>
-<input type="color" class="swatch" data-c="d" value="${S.d||'#1a2744'}" title="Тёмные клетки">
+${(()=>{const L=S.l||'#3d5a80',D=S.d||'#1a2744';const custom=!BP.some(([a,b])=>a===L&&b===D);
+return `<button type="button" data-a="bpcustom" class="bp bp-check bp-edit${custom?' on':''}" title="Свой цвет доски" style="background-image:linear-gradient(${L},${L}),linear-gradient(${D},${D}),linear-gradient(${D},${D}),linear-gradient(${L},${L});background-size:50% 50%;background-position:0 0,100% 0,0 100%,100% 100%;background-repeat:no-repeat"><span class="bp-pen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.2 4.8l5 5M4 20l1.1-3.9L14.5 6.7l3 3L8 19.2 4 20z"/></svg></span></button>`;
+})()}
 </div>
 <p class="hint">Цвет интерфейса</p>
 <div class="row swatch-wrap">${UIC.map(([n,c])=>{
   const sel=(S.ui===c)?' on':'';
   return `<button data-a="uic" data-v="${c}" class="bp${sel}" style="background:${c}" title="${n}"></button>`;
 }).join('')}
-<input type="color" class="swatch" data-ui="1" value="${S.ui||'#6366f1'}" title="Свой цвет">
+${(()=>{const c=S.ui||'#6366f1';const custom=S.ui&&!UIC.some(([,x])=>x===S.ui);
+return `<button type="button" data-a="uicustom" class="bp bp-edit${custom?' on':''}" title="Свой цвет интерфейса" style="background:${c}"><span class="bp-pen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.2 4.8l5 5M4 20l1.1-3.9L14.5 6.7l3 3L8 19.2 4 20z"/></svg></span></button>`;
+})()}
 <button data-a="uir">Сбросить</button>
 </div>
 ${avatarSettings()}${aiSettings()}`,
@@ -3086,6 +3171,11 @@ document.addEventListener('click',e=>{
  else if(a=='sundo'){if(SH.length){SHRD.push(JSON.stringify(start));start=JSON.parse(SH.pop());save()}}
  else if(a=='sredo'){if(SHRD.length){SH.push(JSON.stringify(start));start=JSON.parse(SHRD.pop());save()}}
  else if(a=='bp'){[S.l,S.d]=BP[v];theme();save();render();return}
+ else if(a=='bpcustom'){openBoardColorPop();return}
+ else if(a=='uicustom'){openUiColorPop();return}
+ else if(a=='cpcancel'){closeColorPop();return}
+ else if(a=='cpok'){const l=document.getElementById('cpl'),d=document.getElementById('cpd');if(l&&d){S.l=l.value;S.d=d.value;theme();save()}closeColorPop();render();return}
+ else if(a=='cpokui'){const u=document.getElementById('cpu');if(u){S.ui=u.value;theme();save()}closeColorPop();render();return}
  else if(a=='snd'){S.snd=S.snd?0:1;save()}
  else if(a=='ctl'){const[c,k]=v.split(':');S.ctl[c]=k;linkPlay=0;if(k!='h')S.paused=1;save();if(cur==REC.length-1)botCheck()}
  else if(a=='pause'){S.paused=S.paused?0:1;save();if(!S.paused)botCheck()}
