@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MetaChess v2.12</title>
+<title>MetaChess v2.13</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;800&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#070b16;--fg:#e8eef8;--card:rgba(16,24,48,.82);--l:#3d5a80;--d:#1a2744;--sel:#7dd3fc;--go:#34d399;--acc:#6366f1;--acc2:#a78bfa;--line:rgba(148,163,255,.22);--glow:rgba(99,102,241,.45);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -45,7 +45,10 @@ button,.btn{font:inherit;font-size:15px;padding:9px 13px;border-radius:10px;bord
 .l em{color:var(--d)}.d em{color:var(--l)}
 .lm{background-image:linear-gradient(rgba(240,200,30,.5),rgba(240,200,30,.5))}
 .chk{background-image:radial-gradient(circle,#ff2a2a 0%,rgba(230,20,20,.7) 40%,rgba(230,20,20,0) 75%)}
-.sel{box-shadow:inset 0 0 0 4px var(--sel)}
+.sel{box-shadow:inset 0 0 0 3px var(--sel);z-index:2}
+.sel .pc{z-index:3;filter:none}
+.sel .pc img{opacity:1;transform:none}
+.sq.sel.portal-bg::before,.sq.sel.crystal-bg::before{opacity:.35}
 .go::after{content:"";position:absolute;width:30%;aspect-ratio:1;border-radius:50%;background:var(--go);opacity:.85}
 .cap{box-shadow:inset 0 0 0 4px var(--go)}
 .pc{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-style:normal}
@@ -300,7 +303,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 </head>
 <body>
 <main>
-<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.12</small></h1>
+<h1>MetaChess <small style="font-weight:500;opacity:.7">v2.13</small></h1>
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра">♟</button><button data-a="tab" data-v="setup" title="Расстановка">▦</button><button data-a="tab" data-v="boards" title="Доски">◫</button><button data-a="tab" data-v="pieces" title="Фигуры">✎</button><button data-a="tab" data-v="set" title="Настройки">⚙</button></div>
 <p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bd"></div><div id="capB" class="cap"></div>
 <div id="an"></div>
@@ -867,7 +870,10 @@ function hurtPiece(X,r,c){
 }
 function fire(X,r,c,cap){
  const p=X[r][c],d=P[p.t],e=d&&d.ev;if(!e||!e.when)return'';
- const w=e.when;if(!(w=='far'?((p.c==='b'||p.c==='g')?r===BH()-1:r===0):w=='edge'?r===0||r===BH()-1||c===0||c===BW()-1:cap))return'';
+ const H=BH(),W=BW();
+ const atFar=((p.c==='b'||p.c==='g')?r===H-1:r===0);
+ const atEdge=r===0||r===H-1||c===0||c===W-1;
+ const w=e.when;if(!(w=='far'?atFar:w=='edge'?atEdge:cap))return'';
  const nt=d.name+' '+{to:'превращается',pick:'превращается',die:'исчезает',boom:'взрывается'}[e.do];
  if(e.do=='to')p.t=P[e.to]?e.to:'q';
  else if(e.do=='pick'){if(X===B)pend=[r,c]}
@@ -951,7 +957,7 @@ const mvApply=(X,a,b,r,c,opts={})=>{
  }
  tickRegen(p,'moves',1);
  if(cap){/* material already handled above for live targets */}
- return fire(X,r,c,cap)||note;
+ return note||'';
 };
 const safe=(r,c)=>{
  const p=B[r][c],d=P[p.t],hp=pieceHp(p);
@@ -1110,6 +1116,11 @@ function go(r,c){
   }
  }
  ep=dbl?{sq:[(a+r)/2,c],pr:r,pc:c,c:p.c}:null;
+ /* событие края/превращения — после скольжения и портала, по конечной клетке */
+ if(B[r]&&B[r][c]){
+  const fr=fire(B,r,c,cp);
+  if(fr)note=(note?note+'. ':'')+fr;
+ }
  sel=null;mv=[];freeMv=[];dropSel=null;
  if(typeof a==='number')MOVES.push([a,b,r,c]);
  if(pend)return render();
@@ -1438,7 +1449,7 @@ const form=()=>`<label>Название<input type="text" data-k="name" maxlengt
 <label><input type="checkbox" data-k="royal"> Королевская: ей ставят шах и мат</label>
 <label><input type="checkbox" data-k="rookish"> Ладейная: с ней рокируются королевские (как с ладьёй)</label>
 <label><input type="checkbox" data-k="sitEat"> Есть с места: при «ходе» на врага он снимается, а ты остаёшься</label>
-<label>Доп. жизни (0 = обычная)<input type="number" data-k="lives" min="0" max="9" style="width:70px;margin-left:8px"></label>
+<label>Доп. жизни (0 = обычная, <b>макс. 9</b>)<input type="number" data-k="lives" min="0" max="9" step="1" style="width:70px;margin-left:8px" title="От 0 до 9"></label>
 <p class="hint">При атаке по фигуре с жизнями она теряет 1 жизнь и остаётся, атакующий не встаёт на клетку. Королевская с жизнями может уходить из-под мата / ходить через шах, теряя жизнь.</p>
 <label>Восстановление жизней
 <select data-k="regenMode" style="display:block;width:100%">
@@ -1479,7 +1490,9 @@ ${soundRow()}
 ${avatarSettings()}${aiSettings()}`,
 play:()=>`<p class="hint">Управление сторонами (локально / боты / нейросеть). В сети места выбираются в блоке «Игра по сети» внизу.</p>
 <div class="row"><button data-a="flip" class="${S.flip?'on':''}">Перевернуть доску</button><button data-a="duo" class="${S.duo?'on':''}">Вдвоём: чёрные вверх ногами</button></div>
-${playersList().map(c=>`<div class="row"><span>${esc(colName(c))}:</span>${['h','p','s','a'].map(k=>`<button data-a="ctl" data-v="${c}:${k}" class="${(S.ctl[c]||'h')==k?'on':''}">${CN[k]}</button>`).join('')}</div>`).join('')}
+${playersList().map(c=>`<label style="display:flex;align-items:center;gap:8px;margin:6px 0">${esc(colName(c))}
+<select data-ctl="${c}" style="flex:1;margin:0">${['h','p','s','a'].map(k=>`<option value="${k}" ${(S.ctl[c]||'h')==k?'selected':''}>${CN[k]}</option>`).join('')}</select>
+</label>`).join('')}
 <div class="row"><button data-a="new">Новая игра</button>
 <button data-a="savepos">Сохранить позицию в папку</button></div>
 
@@ -2153,19 +2166,29 @@ function netBroadcast(msg,except){
   try{c.conn.send(msg)}catch(e){}
  });
 }
+let _netStateT=null,_netStateBusy=0;
 function netSendState(){
- const msg={
-  type:'state',
-  pack:pack(),
-  seats:NET.seats,
-  lobby:NET.lobby,
-  hostId:netIsHost()?netMyId():undefined
- };
- if(netIsHost())netBroadcast(msg);
- else{
-  const host=NET.conns[0];
-  if(host&&host.conn&&host.conn.open)try{host.conn.send(msg)}catch(e){}
- }
+ /* в лобби полный пакет не шлём — только при партии; debounce от лагов */
+ if(NET.lobby)return;
+ if(_netStateT)clearTimeout(_netStateT);
+ _netStateT=setTimeout(()=>{
+  if(_netStateBusy)return;
+  _netStateBusy=1;
+  try{
+   const msg={
+    type:'state',
+    pack:pack(),
+    seats:NET.seats,
+    lobby:NET.lobby,
+    hostId:netIsHost()?netMyId():undefined
+   };
+   if(netIsHost())netBroadcast(msg);
+   else{
+    const host=NET.conns[0];
+    if(host&&host.conn&&host.conn.open)try{host.conn.send(msg)}catch(e){}
+   }
+  }finally{_netStateBusy=0}
+ },120);
 }
 function netApplySeatsToCtl(){
  const pl=playersList();
@@ -2193,13 +2216,15 @@ function netApply(msg,fromPeerId){
    const c=NET.conns.find(x=>x.peerId===fromPeerId);
    if(c&&c.conn)c.conn.send(back);
   }catch(e){}
-  if(netIsHost()){netBroadcast({type:'lobby',seats:NET.seats,lobby:NET.lobby,room:NET.room});netSendState()}
+  if(netIsHost()){netBroadcast({type:'lobby',seats:NET.seats,lobby:NET.lobby,room:NET.room});if(!NET.lobby)netSendState()}
   render();return;
  }
  if(msg.type==='lobby'){
   NET.seats=msg.seats||NET.seats;
   if(msg.lobby!=null)NET.lobby=msg.lobby;
   netApplySeatsToCtl();
+  const mine=playersList().find(c=>NET.seats[c]&&NET.seats[c].peerId===netMyId());
+  if(mine)orientForColor(mine);
   render();return;
  }
  if(msg.type==='claim'){
@@ -2216,6 +2241,7 @@ function netApply(msg,fromPeerId){
   }
   NET.seats[col]={peerId:pid,name:msg.name||'Игрок',av:msg.av||null};
   if(msg.av){NET.avatars=NET.avatars||{};NET.avatars[pid]=msg.av}
+  if(pid===netMyId())orientForColor(col);
   netBroadcast({type:'lobby',seats:NET.seats,lobby:NET.lobby});
   render();return;
  }
@@ -2224,6 +2250,8 @@ function netApply(msg,fromPeerId){
   if(msg.pack)try{unpack(msg.pack,{fromNet:1})}catch(e){}
   NET.seats=msg.seats||NET.seats;
   netApplySeatsToCtl();
+  const mine=playersList().find(c=>NET.seats[c]&&NET.seats[c].peerId===netMyId());
+  if(mine)orientForColor(mine);
   NET.status='Игра началась';
   render();return;
  }
@@ -2333,10 +2361,15 @@ function netJoin(code){
   c.on('error',e=>{NET.status='Не удалось войти: '+(e&&e.type||e);render()});
  });
 }
+function orientForColor(color){
+ /* свой цвет «ко мне»: белые/красные/жёлтые снизу (flip=0), чёрные/синие снизу (flip=1) */
+ S.flip=(color==='b'||color==='g')?1:0;
+}
 function netClaim(color){
  if(!playersList().includes(color))return;
  syncNetName();
  NET.myColor=color;
+ orientForColor(color);
  if(netIsHost()){
   Object.keys(NET.seats).forEach(k=>{if(NET.seats[k]&&NET.seats[k].peerId===netMyId())delete NET.seats[k]});
   NET.seats[color]={peerId:netMyId(),name:NET.myName,av:myAvData()};
@@ -2346,6 +2379,7 @@ function netClaim(color){
  }else{
   const host=NET.conns[0];
   if(host&&host.conn)host.conn.send({type:'claim',color,name:NET.myName,av:myAvData()});
+  render();
  }
 }
 function netStartGame(){
@@ -2357,9 +2391,11 @@ function netStartGame(){
  }
  NET.lobby=0;
  netApplySeatsToCtl();
+ const myCols=playersList().filter(c=>NET.seats[c]&&NET.seats[c].peerId===netMyId());
+ if(myCols[0])orientForColor(myCols[0]);
  const msg={type:'start',pack:pack(),seats:NET.seats,lobby:0};
  netBroadcast(msg);
- NET.status='Игра началась · ты ходишь за '+(playersList().filter(c=>NET.seats[c]&&NET.seats[c].peerId===netMyId()).map(colName).join(', ')||'?');
+ NET.status='Игра началась · ты ходишь за '+(myCols.map(colName).join(', ')||'?');
  render();
 }
 function netDisconnect(hard){
@@ -2956,6 +2992,11 @@ return}
   return;
  }
  if(t.id=='fl'){if(t.files[0])up(t.files[0]);return}
+ if(t.dataset&&t.dataset.ctl){
+  const c=t.dataset.ctl,k=t.value;
+  S.ctl[c]=k;linkPlay=0;if(k!='h')S.paused=1;save();
+  if(cur==REC.length-1)botCheck();render();return
+ }
  if(t.dataset&&t.dataset.sv){S.sv[t.dataset.sv]=t.value;save();playS(t.dataset.sv,t.value);return}
  if(t.dataset&&t.dataset.ui){S.ui=t.value;theme();save();return}
  if(t.dataset&&t.dataset.ai){
