@@ -337,12 +337,12 @@ input[type=text],select,textarea{font:inherit;padding:8px;border-radius:8px;bord
 label{display:block;margin:10px 0}
 select{width:100%;margin:4px 0}
 .hint,small{opacity:.75;font-size:13px}
-.cap{min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;
+.capstrip{min-height:40px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;
 margin:6px 0;background:var(--card);border:2px solid #3dcf8e;border-radius:10px;
 box-shadow:inset 0 0 0 1px rgba(61,207,142,.25)}
-.cap:empty{display:none;min-height:0;padding:0;margin:0;border:none}
-.cap .cp{width:30px;height:30px;flex:0 0 auto;background:rgba(128,128,128,.12);border-radius:6px;padding:2px;box-sizing:border-box}
-.cap .cp .pc,.cap .cp img{width:100%!important;height:100%!important}
+.capstrip:empty{display:none;min-height:0;padding:0;margin:0;border:none}
+.capstrip .cp{width:30px;height:30px;flex:0 0 auto;background:rgba(128,128,128,.12);border-radius:6px;padding:2px;box-sizing:border-box}
+.capstrip .cp .pc,.capstrip .cp img{width:100%!important;height:100%!important}
 .cp{width:24px;height:24px;display:inline-block}.cp .pc{width:100%;height:100%}.cp.rot .pc img{transform:rotate(180deg)}
 .nv button{flex:1;min-width:0;font-size:18px;padding:8px 0}
 button:disabled{opacity:.4;cursor:default}
@@ -429,7 +429,7 @@ button:hover,.btn:hover{border-color:rgba(165,180,252,.45)}
 #tabs{background:rgba(12,18,36,.75);backdrop-filter:blur(12px);border-color:var(--line);box-shadow:0 0 0 1px rgba(99,102,241,.12),0 8px 32px rgba(0,0,0,.25)}
 #tabs button.on{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 16px var(--glow)}
 #bd{box-shadow:0 0 0 1px rgba(148,163,255,.15),0 12px 40px rgba(0,0,0,.4),0 0 60px rgba(99,102,241,.12);border-radius:10px}
-.cap{background:rgba(12,18,36,.7)!important;border-color:rgba(52,211,153,.45)!important;backdrop-filter:blur(8px)}
+.capstrip{background:rgba(12,18,36,.7)!important;border-color:rgba(52,211,153,.45)!important;backdrop-filter:blur(8px)}
 #st{text-shadow:0 0 20px rgba(125,211,252,.25)}
 #netdock{background:rgba(12,18,36,.92);border-color:rgba(148,163,255,.3);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 40px rgba(99,102,241,.15);backdrop-filter:blur(16px)}
 #netdock .net-head{background:linear-gradient(135deg,var(--acc),var(--acc2))}
@@ -478,7 +478,7 @@ input[type=text],input[type=password],input[type=url],input[type=number],select,
 <div id="tabs" class="row"><button data-a="tab" data-v="play" title="Игра"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2a2.8 2.8 0 0 0-.9 5.45c-1.15.45-2 1.55-2.15 2.85h6.1c-.15-1.3-1-2.4-2.15-2.85A2.8 2.8 0 0 0 12 3.2zM9.2 12.2l-.7 2.3h7l-.7-2.3H9.2zm-.9 3.5L7.2 20.5h9.6l-1.1-4.8H8.3z"/></svg></button><button data-a="tab" data-v="setup" title="Расстановка"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">✎</span></span></button><button data-a="tab" data-v="boards" title="Доски"><span class="tab-board" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="tb-badge">+</span></span></button><button data-a="tab" data-v="pieces" title="Фигуры"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button data-a="tab" data-v="set" title="Настройки"><svg class="tab-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.07 7.07 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 14 2h-4a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.55-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.61 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.73 14.5a.5.5 0 0 0-.12.64l1.92 3.32c.14.24.43.34.68.22l2.39-.96c.5.39 1.04.71 1.63.94l.36 2.54c.05.24.25.42.49.42h4c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.13-.55 1.63-.94l2.39.96c.25.12.54.02.68-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button></div>
 </header>
 <main>
-<p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="cap"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="cap"></div>
+<p id="st"></p><p id="mt" class="hint"></p><div id="capT" class="capstrip"></div><div id="bdwrap"><div id="bd"></div></div><div id="capB" class="capstrip"></div>
 <div id="an"></div>
 <div id="nav"></div>
 <div id="chatbox" hidden><div id="chatlog"></div><div class="row"><input type="text" id="chatin" placeholder="Напиши нейросети…" style="flex:1;min-width:0"><button data-a="send" title="Отправить">➤</button></div></div>
@@ -1188,6 +1188,17 @@ const safe=(r,c)=>{
  });
 };
 function status(){
+ if(S.rules.win==='checkmate'||!S.rules.win){
+  const had=new Set(),now=new Set();
+  start.forEach(row=>row.forEach(p=>{if(p&&P[p.t]&&P[p.t].royal)had.add(p.c)}));
+  B.forEach(row=>row.forEach(p=>{if(p&&P[p.t]&&P[p.t].royal)now.add(p.c)}));
+  const lost=[...had].filter(c=>!now.has(c));
+  if(lost.length&&!over){
+   const alive=playersList().filter(c=>!lost.includes(c));
+   over='Король взят! Победили '+(alive.length?colName(alive[0]).toLowerCase():'никто');
+   return
+  }
+ }
  if(S.rules.win==='checks'){
   const need=S.rules.checksToWin||3;
   for(const c of playersList()){
@@ -2069,12 +2080,24 @@ function aiExtractContent(j){
 async function aiDiag(){
  const ep=aiEndpoint();let origin;
  try{origin=new URL(ep).origin}catch(e){return 'Адрес API указан неверно.'}
- const t=(u,o)=>{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),8000);return fetch(u,{...o,signal:ac.signal}).finally(()=>clearTimeout(tm))};
- try{await t(origin+'/',{mode:'no-cors'})}
- catch(e){return 'Сервер '+origin+' не отвечает из твоей сети. Это не CORS: выключи или смени VPN, попробуй другую сеть (Wi-Fi или мобильный интернет).'}
- try{await t(origin+'/v1/models',{mode:'cors'})}
- catch(e){return 'Сервер доступен, но браузеру запрещено читать его ответ (CORS). Нужен свой прокси (Cloudflare Worker), публичные ненадёжны.'}
- return 'Сервер доступен и CORS открыт. Проверь API-ключ и название модели.'}
+ const px=String(S.ai.proxy||'').trim();
+ const target=px?(/\/$/.test(px)?px.replace(/\/$/,'')+'/?url='+encodeURIComponent(ep):px+encodeURIComponent(ep)):ep;
+ const body=JSON.stringify({model:String(S.ai.model||'').trim(),messages:[{role:'user',content:'ping'}],max_tokens:1});
+ const h={'Content-Type':'application/json'};if(S.ai.key)h.Authorization='Bearer '+String(S.ai.key).trim();
+ const t=(o)=>{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),8000);return fetch(target,{...o,signal:ac.signal}).finally(()=>clearTimeout(tm))};
+ let r;
+ try{r=await t({method:'POST',headers:h,body})}
+ catch(e){
+  try{await t({method:'POST',headers:{'Content-Type':'text/plain'},body:'{}',mode:'no-cors'});
+   return 'CORS: сервер отвечает, но браузер не получает ответ (источник '+(location.origin||'?')+' не разрешён). Нужен свой прокси (Cloudflare Worker) в поле «CORS-прокси».'}
+  catch(e2){return 'Сервер '+origin+' не отвечает из твоей сети: выключи или смени VPN, попробуй Wi-Fi или мобильный интернет.'}
+ }
+ if(r.status===401||r.status===403)return 'HTTP '+r.status+': ключ не принят. Проверь ключ (можно перевыпустить в кабинете).';
+ if(r.status===404)return 'HTTP 404: неверный адрес API или модели.';
+ if(r.status===429)return 'HTTP 429: лимит запросов провайдера.';
+ if(r.status>=200&&r.status<300)return 'Связь есть (HTTP '+r.status+'). Ход нейросети должен работать.';
+ return 'HTTP '+r.status+': провайдер вернул ошибку, см. кабинет.';
+}
 async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,temperature}={}){
  const o={timeout,jsonMode,temperature};
  AI_LAST_ERROR='';
@@ -2913,7 +2936,7 @@ function scheduleFabHide(){
 function netEnsureDock(){
  let dock=document.getElementById('netdock');
  let fab=document.getElementById('netfab');
- const chatOn=!!(NET.peer||(S.ai&&S.ai.chat));
+ const chatOn=true; /* чат открывается всегда: без комнаты пишет подсказку, нейросеть — если выбрана игроком */
  if(!fab){
   fab=document.createElement('button');
   fab.id='netfab';
