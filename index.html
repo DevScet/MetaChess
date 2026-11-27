@@ -2035,7 +2035,7 @@ const AI_DEF={
  strict:1,
  timeout:60000,
  preset:'zveno',
- proxy:'https://corsproxy.io/?',
+ proxy:'',
  vision:0,
  hybrid:1
 };
@@ -2066,22 +2066,27 @@ function aiExtractContent(j){
  if(typeof j.output_text==='string'&&j.output_text.trim())return j.output_text.trim();
  return null;
 }
+async function aiDiag(){
+ const ep=aiEndpoint();let origin;
+ try{origin=new URL(ep).origin}catch(e){return 'Адрес API указан неверно.'}
+ const t=(u,o)=>{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),8000);return fetch(u,{...o,signal:ac.signal}).finally(()=>clearTimeout(tm))};
+ try{await t(origin+'/',{mode:'no-cors'})}
+ catch(e){return 'Сервер '+origin+' не отвечает из твоей сети. Это не CORS: выключи или смени VPN, попробуй другую сеть (Wi-Fi или мобильный интернет).'}
+ try{await t(origin+'/v1/models',{mode:'cors'})}
+ catch(e){return 'Сервер доступен, но браузеру запрещено читать его ответ (CORS). Нужен свой прокси (Cloudflare Worker), публичные ненадёжны.'}
+ return 'Сервер доступен и CORS открыт. Проверь API-ключ и название модели.'}
 async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,temperature}={}){
  const o={timeout,jsonMode,temperature};
  AI_LAST_ERROR='';
  const endpoint=aiEndpoint();
  if(!endpoint){AI_LAST_ERROR='Не указан адрес API';return null}
  if(!S.ai.model){AI_LAST_ERROR='Не указана модель';return null}
- /* с GitHub Pages / чужого origin CORS к Zveno почти всегда нужен прокси */
- if(!S.ai.proxy&&/zveno\.ai/i.test(endpoint)&&!/^https?:\/\/(localhost|127\.0\.0\.1)/i.test(location.origin||'')){
-  S.ai.proxy='https://corsproxy.io/?';
- }
  const once=async(rf)=>{
   const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),timeout);
   try{
    const h={'Content-Type':'application/json','Accept':'application/json'};
    if(S.ai.key)h.Authorization='Bearer '+String(S.ai.key).trim();
-   if(/openrouter\.ai|zveno\.ai/i.test(endpoint)){
+   if(/openrouter\.ai/i.test(endpoint)){
     h['HTTP-Referer']=location.origin||'https://devscet.github.io';
     h['X-Title']='MetaChess';
    }
@@ -2132,7 +2137,7 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
    const isAbort=e&&e.name==='AbortError';
    AI_LAST_ERROR=isAbort
     ?('Таймаут: нет ответа за '+Math.round(timeout/1000)+' с')
-    :('Сеть/CORS: браузер заблокировал запрос. Если ключ верный — поставь CORS-прокси в настройках или открой игру через локальный сервер. '+((e&&e.message)||''));
+    :('Нет связи с сервером ('+((e&&e.message)||'ошибка сети')+')');
    return{err:isAbort?'timeout':'network'};
   }finally{clearTimeout(tm)}
  };
@@ -2148,27 +2153,9 @@ async function aiPost(messages,{timeout=S.ai.timeout||60000,jsonMode=false,tempe
  }
  const retryable=r.err==='network'||r.err==='timeout'||(r.bad&&(r.bad>=500||r.bad===429));
  if(retryable){await new Promise(resolve=>setTimeout(resolve,800));r=await once(jsonMode&&!(r.bad&&r.bad<500));}
- /* CORS / прокси: несколько вариантов для Zveno с github.io */
- if(!r.t&&/zveno\.ai|openrouter\.ai/i.test(endpoint)){
-  const tried=[String(S.ai.proxy||'')];
-  const list=['https://corsproxy.io/?','https://corsproxy.org/?','https://api.codetabs.com/v1/proxy?quest=','https://thingproxy.freeboard.io/fetch/'];
-  for(const px of list){
-   if(tried.includes(px))continue;
-   tried.push(px);
-   const saved=S.ai.proxy;
-   S.ai.proxy=px;
-   AI_LAST_ERROR='Пробую прокси '+px+'…';
-   r=await once(false);
-   if(r.t){
-    try{save()}catch(e){}
-    AI_LAST_ERROR='';
-    break;
-   }
-   S.ai.proxy=saved;
-  }
-  if(!r.t){
-   AI_LAST_ERROR=(AI_LAST_ERROR||'Нет ответа')+' | Проверь: 1) API-ключ 2) модель deepseek/deepseek-v4.1-flash-1017 3) прокси (corsproxy.io) 4) VPN может мешать';
-  }
+ if(!r.t&&r.err==='network'){
+  const d=await aiDiag();
+  AI_LAST_ERROR=d+' ['+(AI_LAST_ERROR||'')+']';
  }
  if(r.t)AI_LAST_ERROR='';
  return r.t||null;
@@ -2465,7 +2452,7 @@ const aiSettings=()=>{
 <div class="row"><button data-a="aitest" class="on">Проверить подключение</button></div>
 <p id="aistat" class="hint">Проверка шлёт короткий запрос. Итоговый URL: <code style="word-break:break-all">${esc(aiEndpoint()||'—')}</code></p>
 <p class="hint"><b>Zveno:</b> zveno.ai → API keys → ключ. Модель по умолчанию <code>deepseek/deepseek-v4.1-flash-1017</code>. URL: <code>https://api.zveno.ai/v1</code>.<br>
-401 — неверный ключ. CORS — нажми «Поставить corsproxy.io» и «Проверить». Если не отвечает — смени VPN или попробуй без VPN. 429 — лимит.</p>`;
+401 — неверный ключ. Если «Проверить подключение» пишет про CORS — нужен свой прокси (Cloudflare Worker): публичные ненадёжны, и через них проходит твой ключ. Если пишет, что сервер не отвечает — выключи или смени VPN. 429 — лимит.</p>`;
 };
 let bbusy=0;
 /* ===== Онлайн: комната, места, 2–4 игрока, чат (PeerJS) ===== */
@@ -3553,7 +3540,7 @@ try{
  C=s.C||{};
 }catch(e){}
 ensureBoards();
-S.ai={...AI_DEF,...(S.ai||{})};if(!S.ai.preset)S.ai.preset='zveno';if(!S.avMeEmoji&&!S.avMe)S.avMeEmoji='😀';if(!S.avAIEmoji&&!S.avAI)S.avAIEmoji='🤖';if(S.ai.proxy==null)S.ai.proxy='';if(S.ai.hybrid==null)S.ai.hybrid=1;if(S.ai.vision==null)S.ai.vision=0;if(S.ai.talk==null)S.ai.talk=0;if(S.ai.chat==null)S.ai.chat=0;
+S.ai={...AI_DEF,...(S.ai||{})};if(!S.ai.preset)S.ai.preset='zveno';if(!S.avMeEmoji&&!S.avMe)S.avMeEmoji='😀';if(!S.avAIEmoji&&!S.avAI)S.avAIEmoji='🤖';if(S.ai.proxy==null)S.ai.proxy='';if(!S.ai.proxyMig){if(/^https?:\/\/corsproxy\.io\/?\??$/i.test(S.ai.proxy||''))S.ai.proxy='';S.ai.proxyMig=1}if(S.ai.hybrid==null)S.ai.hybrid=1;if(S.ai.vision==null)S.ai.vision=0;if(S.ai.talk==null)S.ai.talk=0;if(S.ai.chat==null)S.ai.chat=0;
 S.bh=8;S.bw=8;S.players=2;S.curBoard='std';
 S.rules={...DEF_RULES};S.fog={on:0,pass:0,radius:2,lines:1,diag:1,around:1,hidePieces:1,silhouettes:0,autoHide:1,delay:400};
 S.checksCount={w:0,b:0};specials=[];
