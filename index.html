@@ -1797,7 +1797,7 @@ const form=()=>`<label>Название<input type="text" data-k="name" maxlengt
 <label>N очков <input type="number" data-k="regenPts" min="0" max="99" style="width:64px"></label>
 </div>
 <label>Событие<select data-k="when"><option value="">Ничего не происходит</option><option value="far">Дошла до дальнего края</option><option value="edge">Дошла до любого края</option><option value="cap">Взяла фигуру</option></select>
-<select data-k="do"><option value="to">Превращается в заданную фигуру</option><option value="pick">Превращается в фигуру на выбор игрока</option><option value="die">Исчезает</option><option value="boom">Взрывается: убирает соседей, кроме королевских</option></select>
+<select data-k="do"><option value="to">Превращается в заданную фигуру</option><option value="pick">Превращается в фигуру на выбор игрока</option><option value="die">Исчезает</option><option value="boom">Взрывается: убирает соседей</option></select>
 <select data-k="to" id="to">${Object.entries(P).filter(([k])=>k!=E.id).map(([k,d])=>`<option value="${k}">${esc(d.name)}</option>`).join('')}</select></label>
 <p id="msg" class="hint"></p>
 <div class="row"><button data-a="sv" class="on">Сохранить</button><button data-a="cx">Отмена</button>${C[E.id]?`<button data-a="del">${STD[E.id]?'Сбросить':'Удалить'}</button>`:''}</div>`;
@@ -3322,7 +3322,7 @@ function render(){
  $('#capT').innerHTML=topCap;$('#capB').innerHTML=botCap;
  $('#capT').hidden=tab!='play'||!topCap;$('#capB').hidden=tab!='play'||!botCap;
  $('#nav').hidden=tab!='play'||anMode||fogged;$('#nav').innerHTML=tab=='play'&&!anMode&&!fogged?NAV():'';
- if(tab=='play'&&!pcs&&!anMode&&over&&cur==REC.length-1&&/^(Мат|Пат|Победа|King|Гонка)/.test(over))$('#bd').insertAdjacentHTML('beforeend',`<div class="endov"><b>${esc(over)}</b><button data-a="analyze">Анализ партии</button><button data-a="new">Новая игра</button></div>`);
+ if(tab=='play'&&!pcs&&!anMode&&over&&cur==REC.length-1&&/^(Мат|Пат|Победа|King|Гонка|Король|Царь|Кристалл)/.test(over))$('#bd').insertAdjacentHTML('beforeend',`<div class="endov"><b>${esc(over)}</b><button data-a="analyze">Анализ партии</button><button data-a="new">Новая игра</button></div>`);
  if(tab!='play'&&anMode){anMode=0;$('#an').className='';$('#an').innerHTML=''}
  if(pcs&&E)fill();updChat();try{netEnsureDock()}catch(e){}}
 
